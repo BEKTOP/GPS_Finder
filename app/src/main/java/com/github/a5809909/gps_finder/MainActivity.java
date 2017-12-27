@@ -1,9 +1,9 @@
 package com.github.a5809909.gps_finder;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -14,9 +14,9 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.View.OnClickListener;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -30,7 +30,7 @@ import org.json.JSONObject;
 import java.util.Calendar;
 
 public class MainActivity extends Activity implements OnClickListener {
-
+    SharedPreferences sPref;
     private static final int LOCATION_PERMISSION_CODE = 855;
     private static final String API_KEY = "AIzaSyDNsRNkiJddjICdCY9fiFw3U6_nziORLC4";
 
@@ -68,8 +68,11 @@ public class MainActivity extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_do_lbs:
-                Toast.makeText(this, "sdfsdfsd", Toast.LENGTH_LONG).show();
                 getLocationClicked(v);
+
+                break;
+            case R.id.btn_send_gps_com:
+                getCid();
 
                 break;
             case R.id.btn_show_database:
@@ -95,6 +98,33 @@ public class MainActivity extends Activity implements OnClickListener {
 //        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),60 * 1000, pintent);
     }
 
+    public void getCid() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            if (isLocationPermissionsAllowed(this)) {
+
+            } else {
+                requestStoragePermissions(this, LOCATION_PERMISSION_CODE);
+
+            }
+
+            TelephonyManager tel = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+
+            if (tel != null) {
+                CellLocation loc = tel.getCellLocation();
+
+                if ((loc != null) && (loc instanceof GsmCellLocation)) {
+                    GsmCellLocation gsmLoc = (GsmCellLocation) loc;
+
+                    String cid = "" + gsmLoc.getCid();
+
+                    Toast.makeText(this, "cid:" + cid, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+
     public void getLocationClicked(View v) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -118,6 +148,9 @@ public class MainActivity extends Activity implements OnClickListener {
                     String lac = "" + gsmLoc.getLac();
                     String mcc = op.substring(0, 3);
                     String mnc = op.substring(3);
+                    Toast.makeText(this, "cid:" + cid, Toast.LENGTH_SHORT).show();
+
+
                     new HttpPostTask().execute(cid, lac, mcc, mnc);
                 } else {
                     Toast.makeText(instance, "No valid GSM network found",
@@ -178,7 +211,6 @@ public class MainActivity extends Activity implements OnClickListener {
                 String response = httpclient.execute(httpost, responseHandler);
 
                 result = response;
-                Log.i(TAG, "ssseee: " + se);
             } catch (Exception e) {
                 final String err = e.getMessage();
                 runOnUiThread(new Runnable() {
@@ -213,6 +245,12 @@ public class MainActivity extends Activity implements OnClickListener {
                     lng = location.getString("lng");
                     lbsAltitude.setText(lat);
                     lbsLongtitude.setText(lng);
+                    sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
+                    SharedPreferences.Editor ed = sPref.edit();
+                    ed.putString("lat", lat);
+                    ed.putString("lng", lng);
+                    ed.commit();
+                    Toast.makeText(MainActivity.this, "lat:" + lat + ", lng:" + lng, Toast.LENGTH_SHORT).show();
 
                 } catch (Exception e) {
                     Toast.makeText(instance, "Exception parsing response: " + e.getMessage(), Toast.LENGTH_LONG).show();
