@@ -1,4 +1,4 @@
-package com.github.a5809909.gps_finder;
+package com.github.a5809909.gps_finder.Activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.github.a5809909.gps_finder.R;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -72,6 +74,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
                 break;
             case R.id.btn_send_gps_com:
+                Toast.makeText(this,"BTN",Toast.LENGTH_SHORT).show();
                 getCid();
 
                 break;
@@ -109,13 +112,13 @@ public class MainActivity extends Activity implements OnClickListener {
             }
 
             TelephonyManager tel = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-
+            Log.i(TAG, "getCid: tel");
             if (tel != null) {
                 CellLocation loc = tel.getCellLocation();
-
+                Log.i(TAG, "getCid: cell");
                 if ((loc != null) && (loc instanceof GsmCellLocation)) {
                     GsmCellLocation gsmLoc = (GsmCellLocation) loc;
-
+                    Log.i(TAG, "getCid: cid");
                     String cid = "" + gsmLoc.getCid();
 
                     Toast.makeText(this, "cid:" + cid, Toast.LENGTH_SHORT).show();
@@ -206,7 +209,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 httpost.setEntity(se);
                 httpost.setHeader("Accept", "application/json");
                 httpost.setHeader("Content-type", "application/json");
-                Log.i(TAG, "se: " + se);
+                Log.i(TAG, "cellTower: " + cellTower);
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 String response = httpclient.execute(httpost, responseHandler);
 

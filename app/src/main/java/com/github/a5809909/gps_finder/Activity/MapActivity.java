@@ -1,10 +1,11 @@
-package com.github.a5809909.gps_finder;
+package com.github.a5809909.gps_finder.Activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.github.a5809909.gps_finder.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,9 +47,6 @@ public class MapActivity  extends AppCompatActivity implements OnMapReadyCallbac
                 .build();
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         map.animateCamera(cameraUpdate);
-
-//        map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-//        map.animateCamera(C);
         map.addMarker(new MarkerOptions().position(latLng).title("lat:"+savedLat+", lng:"+savedLng));
         map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
     }
