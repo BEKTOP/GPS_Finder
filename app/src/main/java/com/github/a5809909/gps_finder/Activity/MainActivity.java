@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import java.util.Calendar;
 
 public class MainActivity extends Activity implements OnClickListener {
+
     SharedPreferences sPref;
     private static final int LOCATION_PERMISSION_CODE = 855;
     private static final String API_KEY = "AIzaSyDNsRNkiJddjICdCY9fiFw3U6_nziORLC4";
@@ -39,7 +40,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private MainActivity instance;
     private static final String TAG = "Main";
     //    private DatabaseHelper databaseHelper;
-    private TextView lbsLatitude, lbsLongtitude, lbsAltitude, lbsPrecision, lbsType;
+    private TextView textviewLat, textviewLng, textviewAcc;
 
     public static void requestStoragePermissions(Activity activity, int PERMISSION_REQUEST_CODE) {
         java.lang.String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.READ_PHONE_STATE"};
@@ -63,30 +64,37 @@ public class MainActivity extends Activity implements OnClickListener {
         setContentView(R.layout.activity_main);
         instance = this;
         initViews();
+        sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
+        String savedLat = sPref.getString("lat", "");
+        String savedLng = sPref.getString("lng", "");
+        String savedAccuracy = sPref.getString("accuracy", "");
+
+        textviewLat.setText(savedLat);
+        textviewLng.setText(savedLng);
+        textviewAcc.setText(savedAccuracy);
 
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
+            case R.id.btn_json_create:
+                getCid();
+                break;
+
             case R.id.btn_json_send:
                 getLocationClicked(v);
-
                 break;
-            case R.id.btn_send_gps_com:
-                Toast.makeText(this,"BTN",Toast.LENGTH_SHORT).show();
-                getCid();
 
-                break;
             case R.id.btn_show_database:
                 Intent intentDataBase = new Intent(getApplicationContext(), DataActivity.class);
                 startActivity(intentDataBase);
-
                 break;
+
             case R.id.btn_maps:
                 Intent intentMap = new Intent(getApplicationContext(), MapActivity.class);
                 startActivity(intentMap);
-
                 break;
 
         }
@@ -242,18 +250,20 @@ public class MainActivity extends Activity implements OnClickListener {
                 try {
                     JSONObject jsonResult = new JSONObject(result);
                     JSONObject location = jsonResult.getJSONObject("location");
+                    String accuracy = jsonResult.getString("accuracy");
                     String lat, lng;
 
                     lat = location.getString("lat");
                     lng = location.getString("lng");
-                    lbsAltitude.setText(lat);
-                    lbsLongtitude.setText(lng);
+
                     sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
                     SharedPreferences.Editor ed = sPref.edit();
                     ed.putString("lat", lat);
                     ed.putString("lng", lng);
+                    ed.putString("accuracy", accuracy);
+
                     ed.commit();
-                    Toast.makeText(MainActivity.this, "lat:" + lat + ", lng:" + lng, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "lat:" + lat + ", lng:" + lng + ", acc:" + accuracy, Toast.LENGTH_SHORT).show();
 
                 } catch (Exception e) {
                     Toast.makeText(instance, "Exception parsing response: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -265,11 +275,10 @@ public class MainActivity extends Activity implements OnClickListener {
     }
 
     private void initViews() {
-        lbsLatitude = findViewById(R.id.lbs_latitude);
-        lbsLongtitude = findViewById(R.id.lbs_longtitude);
-        lbsAltitude = findViewById(R.id.lbs_altitude);
-        lbsPrecision = findViewById(R.id.lbs_precision);
-        lbsType = findViewById(R.id.lbs_type);
+        textviewLat = findViewById(R.id.textView_lat);
+        textviewLng = findViewById(R.id.textView_lng);
+        textviewAcc = findViewById(R.id.textView_acc);
+
 
     }
 
