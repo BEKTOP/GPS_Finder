@@ -14,53 +14,62 @@
         android:paddingRight="20dp">
 
         <Button
-            android:id="@+id/btn_do_lbs"
+            android:id="@+id/btn_json_create"
+            style="@style/btn_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Do request Yandex"
             android:onClick="onClick"
-            style="@style/btn_style"
+            android:text="Create JSON"
             />
 
         <Button
-            android:id="@+id/btn_show_database"
+            android:id="@+id/btn_json_send"
+            style="@style/btn_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Show DataBase"
             android:onClick="onClick"
-            style="@style/btn_style"
-            />
-
-        <Button
-            android:id="@+id/btn_auth_gps.com"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Auth GPS-trace.com"
-            style="@style/btn_style"
-            />
-
-        <Button
-            android:id="@+id/btn_send_gps.com"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send message to GPS-trace.com"
-            style="@style/btn_style"
+            android:text="Send JSON Google"
             />
 
         <Button
             android:id="@+id/btn_maps"
+            style="@style/btn_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Show coordinats on Map"
             android:onClick="onClick"
-            style="@style/btn_style"/>
+            android:text="Show coordinats on Map"/>
+
+        <Button
+            android:id="@+id/btn_show_database"
+            style="@style/btn_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="Show DataBase"
+            />
 
         <Button
             android:id="@+id/btn_images"
+            style="@style/btn_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Show Images"
+            android:text="Show Images near"
+            />
+
+        <Button
+            android:id="@+id/btn_auth_gps.com"
             style="@style/btn_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Auth GPS-trace.com"
+            />
+
+        <Button
+            android:id="@+id/btn_send_gps.com"
+            style="@style/btn_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send message to GPS-trace.com"
             />
     </LinearLayout>
 

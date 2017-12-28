@@ -69,7 +69,7 @@ public class MainActivity extends Activity implements OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_do_lbs:
+            case R.id.btn_json_send:
                 getLocationClicked(v);
 
                 break;
