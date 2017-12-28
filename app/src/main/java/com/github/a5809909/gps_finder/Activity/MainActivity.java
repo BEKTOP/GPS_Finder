@@ -2,16 +2,19 @@ package com.github.a5809909.gps_finder.Activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,27 +39,10 @@ public class MainActivity extends Activity implements OnClickListener {
     SharedPreferences sPref;
     private static final int LOCATION_PERMISSION_CODE = 855;
     private static final String API_KEY = "AIzaSyDNsRNkiJddjICdCY9fiFw3U6_nziORLC4";
-
-    private MainActivity instance;
-    private static final String TAG = "Main";
     //    private DatabaseHelper databaseHelper;
     private TextView textviewLat, textviewLng, textviewAcc;
-
-    public static void requestStoragePermissions(Activity activity, int PERMISSION_REQUEST_CODE) {
-        java.lang.String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.READ_PHONE_STATE"};
-        ActivityCompat.requestPermissions(activity, perms, PERMISSION_REQUEST_CODE);
-    }
-
-    public static boolean isLocationPermissionsAllowed(Activity activity) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            return activity.checkSelfPermission("android.permission.ACCESS_FINE_LOCATION") == PackageManager.PERMISSION_GRANTED
-                    &&
-                    activity.checkSelfPermission("android.permission.ACCESS_COARSE_LOCATION") == PackageManager.PERMISSION_GRANTED
-                    &&
-                    activity.checkSelfPermission("android.permission.READ_PHONE_STATE") == PackageManager.PERMISSION_GRANTED;
-        }
-        return true;
-    }
+    private MainActivity instance;
+    private static final String TAG = "Main";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,10 +55,14 @@ public class MainActivity extends Activity implements OnClickListener {
         String savedLng = sPref.getString("lng", "");
         String savedAccuracy = sPref.getString("accuracy", "");
 
+        setTextViewLocation(savedLat, savedLng, savedAccuracy);
+
+    }
+
+    private void setTextViewLocation(String savedLat, String savedLng, String savedAccuracy) {
         textviewLat.setText(savedLat);
         textviewLng.setText(savedLng);
         textviewAcc.setText(savedAccuracy);
-
     }
 
     @Override
@@ -135,7 +125,6 @@ public class MainActivity extends Activity implements OnClickListener {
         }
     }
 
-
     public void getLocationClicked(View v) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -143,7 +132,9 @@ public class MainActivity extends Activity implements OnClickListener {
 
             } else {
                 requestStoragePermissions(this, LOCATION_PERMISSION_CODE);
-
+                if (!isLocationPermissionsAllowed(this)) {
+                    return;
+                }
             }
 
             TelephonyManager tel = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
@@ -170,6 +161,29 @@ public class MainActivity extends Activity implements OnClickListener {
             }
         }
     }
+
+
+    public static void requestStoragePermissions(Activity activity, int PERMISSION_REQUEST_CODE) {
+     try {
+         java.lang.String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.READ_PHONE_STATE"};
+         ActivityCompat.requestPermissions(activity, perms, PERMISSION_REQUEST_CODE);
+     } catch (Exception e) {
+         e.printStackTrace();
+
+     }
+    }
+
+    public static boolean isLocationPermissionsAllowed(Activity activity) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            return activity.checkSelfPermission("android.permission.ACCESS_FINE_LOCATION") == PackageManager.PERMISSION_GRANTED
+                    &&
+                    activity.checkSelfPermission("android.permission.ACCESS_COARSE_LOCATION") == PackageManager.PERMISSION_GRANTED
+                    &&
+                    activity.checkSelfPermission("android.permission.READ_PHONE_STATE") == PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+
 
     private class HttpPostTask extends AsyncTask<String, Void, String> {
 
@@ -264,7 +278,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
                     ed.commit();
                     Toast.makeText(MainActivity.this, "lat:" + lat + ", lng:" + lng + ", acc:" + accuracy, Toast.LENGTH_SHORT).show();
-
+                    setTextViewLocation(lat, lng, accuracy);
                 } catch (Exception e) {
                     Toast.makeText(instance, "Exception parsing response: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     e.printStackTrace();
