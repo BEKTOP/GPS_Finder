@@ -2,19 +2,16 @@ package com.github.a5809909.gps_finder.Activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.a5809909.gps_finder.R;
+import com.github.a5809909.gps_finder.Service.LogService;
+import com.github.a5809909.gps_finder.Utilities.Constants;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -87,6 +86,16 @@ public class MainActivity extends Activity implements OnClickListener {
                 startActivity(intentMap);
                 break;
 
+            case R.id.btn_show_pictures:
+                Intent startIntent = new Intent(MainActivity.this, LogService.class);
+                startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+                startService(startIntent);
+                break;
+            case R.id.btn_show_weather:
+                Intent stopIntent = new Intent(MainActivity.this, LogService.class);
+                stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+                startService(stopIntent);
+                break;
         }
     }
 
@@ -164,13 +173,13 @@ public class MainActivity extends Activity implements OnClickListener {
 
 
     public static void requestStoragePermissions(Activity activity, int PERMISSION_REQUEST_CODE) {
-     try {
-         java.lang.String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.READ_PHONE_STATE"};
-         ActivityCompat.requestPermissions(activity, perms, PERMISSION_REQUEST_CODE);
-     } catch (Exception e) {
-         e.printStackTrace();
+        try {
+            java.lang.String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.READ_PHONE_STATE"};
+            ActivityCompat.requestPermissions(activity, perms, PERMISSION_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
 
-     }
+        }
     }
 
     public static boolean isLocationPermissionsAllowed(Activity activity) {
@@ -232,6 +241,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 httpost.setHeader("Accept", "application/json");
                 httpost.setHeader("Content-type", "application/json");
                 Log.i(TAG, "cellTower: " + cellTower);
+                Log.i(TAG, "rootObject.toString(): " + rootObject.toString());
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 String response = httpclient.execute(httpost, responseHandler);
 

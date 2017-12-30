@@ -25,7 +25,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="LATITUDE: "
+                android:maxLines="1"
+                android:text="LATITUDE:"
                 android:textColor="@color/zebraBlue"
                 android:textStyle="bold" />
 
@@ -34,7 +35,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="LONGITUDE: "
+                android:maxLines="1"
+                android:text="LONGITUDE:"
                 android:textColor="@color/zebraBlue"
                 android:textStyle="bold" />
 
@@ -43,7 +45,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="ACCURACY: "
+                android:maxLines="1"
+                android:text="ACCURACY:"
                 android:textColor="@color/zebraBlue"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -51,30 +54,30 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginRight="5dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView_lat"
-                android:maxLines="1"
-
                 android:layout_width="wrap_content"
+
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView_lng"
-                android:maxLines="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView_acc"
-                android:maxLines="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -100,20 +103,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textAllCaps="true"
                 android:onClick="onClick"
                 android:text="Send JSON "
+                android:textAllCaps="true"
                 android:textColor="@color/zebraBlue"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/btn_show_database"
-                android:textAllCaps="true"
-                android:onClick="onClick"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:onClick="onClick"
                 android:text="Show DBase"
+                android:textAllCaps="true"
                 android:textColor="@color/zebraBlue"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -140,20 +143,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textAllCaps="true"
                 android:onClick="onClick"
                 android:text="Show PIC"
+                android:textAllCaps="true"
                 android:textColor="@color/zebraBlue"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/btn_show_weather"
-                android:textAllCaps="true"
-                android:onClick="onClick"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:onClick="onClick"
                 android:text="Show Weat"
+                android:textAllCaps="true"
                 android:textColor="@color/zebraBlue"
                 android:textStyle="bold" />
         </LinearLayout>
