@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/navmenu_point"
+        android:icon="@drawable/access_point_network"
+        android:orderInCategory="1"
+        android:title="Show Point"/>
+    <item
+        android:id="@+id/navmenu_database"
+        android:icon="@drawable/database"
+        android:orderInCategory="1"
+        android:title="DataBase"/>
+  <item
+        android:id="@+id/navmenu_map"
+        android:icon="@drawable/map_marker_radius"
+        android:orderInCategory="1"
+        android:title="Show Map"/>
+  <item
+        android:id="@+id/navmenu_image"
+        android:icon="@drawable/image"
+        android:orderInCategory="1"
+        android:title="Images"/>
+  <item
+        android:id="@+id/navmenu_weather"
+        android:icon="@drawable/weather_partlycloudy"
+        android:orderInCategory="1"
+        android:title="Weather"/>
+
+
+</menu>

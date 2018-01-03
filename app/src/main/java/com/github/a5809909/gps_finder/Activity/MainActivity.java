@@ -8,7 +8,11 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
@@ -17,7 +21,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
+import com.github.a5809909.gps_finder.Adapter.TabsPagerFragmentAdapter;
 import com.github.a5809909.gps_finder.R;
 import com.github.a5809909.gps_finder.Service.LogService;
 import com.github.a5809909.gps_finder.Utilities.Constants;
@@ -33,7 +39,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     SharedPreferences sPref;
     private static final int LOCATION_PERMISSION_CODE = 855;
@@ -42,6 +48,9 @@ public class MainActivity extends Activity implements OnClickListener {
     private TextView textviewLat, textviewLng, textviewAcc;
     private MainActivity instance;
     private static final String TAG = "Main";
+    private DrawerLayout mDrawerLayout;
+    private ViewPager viewPager;
+    private Toolbar toolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,12 +58,34 @@ public class MainActivity extends Activity implements OnClickListener {
         setContentView(R.layout.activity_main);
         instance = this;
         initViews();
+        initToolBar();
+        initNavigationView();
+        initTabs();
+
         sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
         String savedLat = sPref.getString("lat", "");
         String savedLng = sPref.getString("lng", "");
         String savedAccuracy = sPref.getString("accuracy", "");
 
         setTextViewLocation(savedLat, savedLng, savedAccuracy);
+
+    }
+
+    private void initToolBar() {
+   //     toolbar = findViewById(R.id.toolbar);
+    }
+
+    private void initTabs() {
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        TabsPagerFragmentAdapter adapter = new TabsPagerFragmentAdapter(getSupportFragmentManager());
+
+        TabLayout mTabLayout = findViewById(R.id.tabLayout);
+        mTabLayout.setupWithViewPager(viewPager);
+
+    }
+
+    private void initNavigationView() {
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
     }
 
@@ -161,7 +192,6 @@ public class MainActivity extends Activity implements OnClickListener {
                     String mnc = op.substring(3);
                     Toast.makeText(this, "cid:" + cid, Toast.LENGTH_SHORT).show();
 
-
                     new HttpPostTask().execute(cid, lac, mcc, mnc);
                 } else {
                     Toast.makeText(instance, "No valid GSM network found",
@@ -170,7 +200,6 @@ public class MainActivity extends Activity implements OnClickListener {
             }
         }
     }
-
 
     public static void requestStoragePermissions(Activity activity, int PERMISSION_REQUEST_CODE) {
         try {
@@ -192,7 +221,6 @@ public class MainActivity extends Activity implements OnClickListener {
         }
         return true;
     }
-
 
     private class HttpPostTask extends AsyncTask<String, Void, String> {
 
@@ -302,7 +330,6 @@ public class MainActivity extends Activity implements OnClickListener {
         textviewLat = findViewById(R.id.textView_lat);
         textviewLng = findViewById(R.id.textView_lng);
         textviewAcc = findViewById(R.id.textView_acc);
-
 
     }
 
