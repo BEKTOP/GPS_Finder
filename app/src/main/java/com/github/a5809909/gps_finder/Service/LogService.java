@@ -43,13 +43,22 @@ public class LogService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        while (true) {
+            try {
+                Thread.sleep(5000);
+                getLocationClicked();
+
+            } catch (InterruptedException ie) {
+            }
+
+        }
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
             Log.i(LOG_TAG, "Received Start Foreground Intent ");
-           isRun=true;
+            isRun = true;
             Intent notificationIntent = new Intent(this, MainActivity.class);
             notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -74,22 +83,16 @@ public class LogService extends Service {
         } else if (intent.getAction().equals(
                 Constants.ACTION.STOPFOREGROUND_ACTION)) {
             Log.i(LOG_TAG, "Received Stop Foreground Intent");
-            isRun=false;
+            isRun = false;
             stopForeground(true);
             stopSelf();
 
         }
-      //  while (isRun) {
-        getLocationClicked();
-//            try {
-//                Thread.sleep(10000);
-//            } catch (InterruptedException ie) {
-//            }
-//        }
 
 
-        return START_STICKY;
-    }
+
+            return START_STICKY;
+        }
 
     public void getLocationClicked() {
 
@@ -106,7 +109,7 @@ public class LogService extends Service {
                 String lac = "" + gsmLoc.getLac();
                 String mcc = op.substring(0, 3);
                 String mnc = op.substring(3);
-                Toast.makeText(this, "cid:" + cid, Toast.LENGTH_SHORT).show();
+                Log.i(LOG_TAG, "onStartCommand: 5000 ms");
 
             } else {
 

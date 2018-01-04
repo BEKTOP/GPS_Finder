@@ -1,0 +1,157 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.github.a5809909.gps_finder.Fragment.OneFragment">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_weight="1.6"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_View_lat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:maxLines="1"
+            android:text="LATITUDE:"
+            android:textColor="@color/zebraBlue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_View_lng"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:maxLines="1"
+            android:text="LONGITUDE:"
+            android:textColor="@color/zebraBlue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_View_acc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:maxLines="1"
+            android:text="ACCURACY:"
+            android:textColor="@color/zebraBlue"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView_lat"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView_lng"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView_acc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/btn_json_create"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:text="Create JSON"
+            android:textAllCaps="true"
+            android:textColor="@color/zebraBlue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_json_send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:text="Send JSON "
+            android:textAllCaps="true"
+            android:textColor="@color/zebraBlue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_show_database"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:text="Show DBase"
+            android:textAllCaps="true"
+            android:textColor="@color/zebraBlue"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/btn_maps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:text="Show map"
+            android:textAllCaps="true"
+            android:textColor="@color/zebraBlue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_show_pictures"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:text="Show PIC"
+            android:textAllCaps="true"
+            android:textColor="@color/zebraBlue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_show_weather"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:text="Show Weat"
+            android:textAllCaps="true"
+            android:textColor="@color/zebraBlue"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+</LinearLayout>

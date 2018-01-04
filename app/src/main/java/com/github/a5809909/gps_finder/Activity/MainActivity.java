@@ -8,22 +8,29 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.github.a5809909.gps_finder.Adapter.TabsPagerFragmentAdapter;
+import com.github.a5809909.gps_finder.Adapter.ViewPagerAdapter;
+import com.github.a5809909.gps_finder.Fragment.OneFragment;
+import com.github.a5809909.gps_finder.Fragment.TwoFragment;
 import com.github.a5809909.gps_finder.R;
 import com.github.a5809909.gps_finder.Service.LogService;
 import com.github.a5809909.gps_finder.Utilities.Constants;
@@ -40,6 +47,9 @@ import org.json.JSONObject;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener {
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     SharedPreferences sPref;
     private static final int LOCATION_PERMISSION_CODE = 855;
@@ -49,51 +59,106 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private MainActivity instance;
     private static final String TAG = "Main";
     private DrawerLayout mDrawerLayout;
-    private ViewPager viewPager;
-    private Toolbar toolbar;
+    private String savedLat;
+    private String savedLng;
+    private String savedAccuracy;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        instance = this;
-        initViews();
-        initToolBar();
+
+        initToolbar();
         initNavigationView();
         initTabs();
+        initFab();
+        initViews();
+
+
+
+
+
+
+        instance = this;
 
         sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
-        String savedLat = sPref.getString("lat", "");
-        String savedLng = sPref.getString("lng", "");
-        String savedAccuracy = sPref.getString("accuracy", "");
+        savedLat = sPref.getString("lat", "");
+        savedLng = sPref.getString("lng", "");
+        savedAccuracy = sPref.getString("accuracy", "");
 
-        setTextViewLocation(savedLat, savedLng, savedAccuracy);
+      //  setTextViewLocation(savedLat, savedLng, savedAccuracy);
 
     }
 
-    private void initToolBar() {
-   //     toolbar = findViewById(R.id.toolbar);
+    private void initFab() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
     }
 
     private void initTabs() {
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        TabsPagerFragmentAdapter adapter = new TabsPagerFragmentAdapter(getSupportFragmentManager());
+        viewPager = findViewById(R.id.view_pager);
+        setupViewPager(viewPager);
 
-        TabLayout mTabLayout = findViewById(R.id.tabLayout);
-        mTabLayout.setupWithViewPager(viewPager);
+        tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+        setupTabIcons();
+    }
 
+    private void initToolbar() {
+        toolbar = findViewById(R.id.toolbar);
+        if (toolbar !=null){
+        setSupportActionBar(toolbar);
+        setTitle("Lat: "+savedLat+", Lng: "+savedLng+", Acc: "+savedAccuracy);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    private void setupTabIcons() {
+        int[] tabIcons = {
+                R.drawable.access_point_network,
+                R.drawable.database,
+                R.drawable.map_marker_radius,
+                R.drawable.image,
+                R.drawable.weather_partlycloudy
+        };
+
+        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
+        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+        tabLayout.getTabAt(3).setIcon(tabIcons[3]);
+        tabLayout.getTabAt(4).setIcon(tabIcons[4]);
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFrag(new OneFragment(), "ONE");
+        adapter.addFrag(new TwoFragment(), "TWO");
+        adapter.addFrag(new OneFragment(), "THREE");
+        adapter.addFrag(new OneFragment(), "FOUR");
+        adapter.addFrag(new OneFragment(), "FIVE");
+        viewPager.setAdapter(adapter);
     }
 
     private void initNavigationView() {
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
+
+
     }
 
-    private void setTextViewLocation(String savedLat, String savedLng, String savedAccuracy) {
-        textviewLat.setText(savedLat);
-        textviewLng.setText(savedLng);
-        textviewAcc.setText(savedAccuracy);
-    }
+
+//    private void setTextViewLocation(String savedLat, String savedLng, String savedAccuracy) {
+//        textviewLat.setText(savedLat);
+//        textviewLng.setText(savedLng);
+//        textviewAcc.setText(savedAccuracy);
+//    }
 
     @Override
     public void onClick(View v) {
@@ -192,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                     String mnc = op.substring(3);
                     Toast.makeText(this, "cid:" + cid, Toast.LENGTH_SHORT).show();
 
+
                     new HttpPostTask().execute(cid, lac, mcc, mnc);
                 } else {
                     Toast.makeText(instance, "No valid GSM network found",
@@ -200,6 +266,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             }
         }
     }
+
 
     public static void requestStoragePermissions(Activity activity, int PERMISSION_REQUEST_CODE) {
         try {
@@ -221,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
         return true;
     }
+
 
     private class HttpPostTask extends AsyncTask<String, Void, String> {
 
@@ -316,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
                     ed.commit();
                     Toast.makeText(MainActivity.this, "lat:" + lat + ", lng:" + lng + ", acc:" + accuracy, Toast.LENGTH_SHORT).show();
-                    setTextViewLocation(lat, lng, accuracy);
+                  //  setTextViewLocation(lat, lng, accuracy);
                 } catch (Exception e) {
                     Toast.makeText(instance, "Exception parsing response: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     e.printStackTrace();
@@ -330,6 +398,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         textviewLat = findViewById(R.id.textView_lat);
         textviewLng = findViewById(R.id.textView_lng);
         textviewAcc = findViewById(R.id.textView_acc);
+
 
     }
 
@@ -353,5 +422,41 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
     }
+
+
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+
+
+
+
+
+
+
 
 }
