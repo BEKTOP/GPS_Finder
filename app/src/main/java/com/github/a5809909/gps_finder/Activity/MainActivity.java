@@ -9,19 +9,19 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.a5809909.gps_finder.Adapter.ViewPagerAdapter;
+import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
+import com.github.a5809909.gps_finder.Fragment.LocationFragment;
+import com.github.a5809909.gps_finder.Fragment.MapFragment;
 import com.github.a5809909.gps_finder.Fragment.OneFragment;
 import com.github.a5809909.gps_finder.Fragment.TwoFragment;
 import com.github.a5809909.gps_finder.R;
@@ -46,7 +49,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements OnClickListener {
+public class MainActivity extends AppCompatActivity implements OnClickListener,NavigationView.OnNavigationItemSelectedListener {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -69,37 +72,28 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        instance = this;
+
+        getShared();
+
         initToolbar();
         initNavigationView();
         initTabs();
         initFab();
-        initViews();
 
 
+    }
 
-
-
-
-        instance = this;
-
+    private void getShared() {
         sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
-        savedLat = sPref.getString("lat", "");
-        savedLng = sPref.getString("lng", "");
+        savedLat = sPref.getString("lat", "").substring(0,7);
+        savedLng = sPref.getString("lng", "").substring(0,7);
         savedAccuracy = sPref.getString("accuracy", "");
-
-      //  setTextViewLocation(savedLat, savedLng, savedAccuracy);
-
     }
 
     private void initFab() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(this);
     }
 
     private void initTabs() {
@@ -113,18 +107,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     private void initToolbar() {
         toolbar = findViewById(R.id.toolbar);
-        if (toolbar !=null){
-        setSupportActionBar(toolbar);
-        setTitle("Lat: "+savedLat+", Lng: "+savedLng+", Acc: "+savedAccuracy);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            setTitle("Lat: " + savedLat + ", Lng: " + savedLng);
+            toolbar.setSubtitle("Acc: " + savedAccuracy);
+          //  getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
     private void setupTabIcons() {
         int[] tabIcons = {
-                R.drawable.access_point_network,
-                R.drawable.database,
                 R.drawable.map_marker_radius,
+                R.drawable.database,
+                R.drawable.google_maps,
                 R.drawable.image,
                 R.drawable.weather_partlycloudy
         };
@@ -138,27 +133,49 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new OneFragment(), "ONE");
-        adapter.addFrag(new TwoFragment(), "TWO");
-        adapter.addFrag(new OneFragment(), "THREE");
-        adapter.addFrag(new OneFragment(), "FOUR");
-        adapter.addFrag(new OneFragment(), "FIVE");
+        adapter.addFrag(new LocationFragment(), "LOCATION");
+        adapter.addFrag(new DatabaseFragment(), "DATABASE");
+        adapter.addFrag(new MapFragment(), "MAP");
+        adapter.addFrag(new OneFragment(), "IMAGES");
+        adapter.addFrag(new DatabaseFragment(), "WEATHER");
         viewPager.setAdapter(adapter);
     }
 
     private void initNavigationView() {
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
 
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
 
-//    private void setTextViewLocation(String savedLat, String savedLng, String savedAccuracy) {
-//        textviewLat.setText(savedLat);
-//        textviewLng.setText(savedLng);
-//        textviewAcc.setText(savedAccuracy);
-//    }
+        if (id == R.id.show_point) {
+            // Handle the camera action
+        } else if (id == R.id.database) {
+
+        } else if (id == R.id.show_map) {
+
+        } else if (id == R.id.images) {
+
+        } else if (id == R.id.weather) {
+
+        }
+
+        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 
     @Override
     public void onClick(View v) {
@@ -172,15 +189,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 getLocationClicked(v);
                 break;
 
+            case R.id.fab:
+                getLocationClicked(v);
+                break;
+
             case R.id.btn_show_database:
                 Intent intentDataBase = new Intent(getApplicationContext(), DataActivity.class);
                 startActivity(intentDataBase);
                 break;
 
-            case R.id.btn_maps:
-                Intent intentMap = new Intent(getApplicationContext(), MapActivity.class);
-                startActivity(intentMap);
-                break;
+//            case R.id.btn_maps:
+//                Intent intentMap = new Intent(getApplicationContext(), MapActivity.class);
+//                startActivity(intentMap);
+//                break;
 
             case R.id.btn_show_pictures:
                 Intent startIntent = new Intent(MainActivity.this, LogService.class);
@@ -241,28 +262,29 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                     return;
                 }
             }
-
-            TelephonyManager tel = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-
-            if (tel != null) {
-                CellLocation loc = tel.getCellLocation();
-
-                if ((loc != null) && (loc instanceof GsmCellLocation)) {
-                    GsmCellLocation gsmLoc = (GsmCellLocation) loc;
-                    String op = tel.getNetworkOperator();
-
-                    String cid = "" + gsmLoc.getCid();
-                    String lac = "" + gsmLoc.getLac();
-                    String mcc = op.substring(0, 3);
-                    String mnc = op.substring(3);
-                    Toast.makeText(this, "cid:" + cid, Toast.LENGTH_SHORT).show();
+        }
 
 
-                    new HttpPostTask().execute(cid, lac, mcc, mnc);
-                } else {
-                    Toast.makeText(instance, "No valid GSM network found",
-                            Toast.LENGTH_LONG).show();
-                }
+        TelephonyManager tel = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+
+        if (tel != null) {
+            CellLocation loc = tel.getCellLocation();
+
+            if ((loc != null) && (loc instanceof GsmCellLocation)) {
+                GsmCellLocation gsmLoc = (GsmCellLocation) loc;
+                String op = tel.getNetworkOperator();
+
+                String cid = "" + gsmLoc.getCid();
+                String lac = "" + gsmLoc.getLac();
+                String mcc = op.substring(0, 3);
+                String mnc = op.substring(3);
+                Toast.makeText(this, "cid:" + cid, Toast.LENGTH_SHORT).show();
+
+
+                new HttpPostTask().execute(cid, lac, mcc, mnc);
+            } else {
+                Toast.makeText(instance, "No valid GSM network found",
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -383,8 +405,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                     ed.putString("accuracy", accuracy);
 
                     ed.commit();
+                    getShared();
+                    initToolbar();
                     Toast.makeText(MainActivity.this, "lat:" + lat + ", lng:" + lng + ", acc:" + accuracy, Toast.LENGTH_SHORT).show();
-                  //  setTextViewLocation(lat, lng, accuracy);
+                    //  setTextViewLocation(lat, lng, accuracy);
                 } catch (Exception e) {
                     Toast.makeText(instance, "Exception parsing response: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     e.printStackTrace();
@@ -394,13 +418,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     }
 
-    private void initViews() {
-        textviewLat = findViewById(R.id.textView_lat);
-        textviewLng = findViewById(R.id.textView_lng);
-        textviewAcc = findViewById(R.id.textView_acc);
-
-
-    }
 
 //    private void saveInSql(PhoneState result) {
 //        databaseHelper = new DatabaseHelper(this);
@@ -424,39 +441,27 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     }
 
 
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
-
-
-
-
-
-
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
 
 }
