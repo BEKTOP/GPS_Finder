@@ -34,6 +34,7 @@ import com.github.a5809909.gps_finder.Fragment.LocationFragment;
 import com.github.a5809909.gps_finder.Fragment.MapFragment;
 import com.github.a5809909.gps_finder.Fragment.OneFragment;
 import com.github.a5809909.gps_finder.Fragment.TwoFragment;
+import com.github.a5809909.gps_finder.ImagrLoader.PhotoGalleryFragment;
 import com.github.a5809909.gps_finder.R;
 import com.github.a5809909.gps_finder.Service.LogService;
 import com.github.a5809909.gps_finder.Utilities.Constants;
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
         adapter.addFrag(new LocationFragment(), "LOCATION");
         adapter.addFrag(new DatabaseFragment(), "DATABASE");
         adapter.addFrag(new MapFragment(), "MAP");
-        adapter.addFrag(new OneFragment(), "IMAGES");
+        adapter.addFrag(new PhotoGalleryFragment(), "IMAGES");
         adapter.addFrag(new DatabaseFragment(), "WEATHER");
         viewPager.setAdapter(adapter);
     }
