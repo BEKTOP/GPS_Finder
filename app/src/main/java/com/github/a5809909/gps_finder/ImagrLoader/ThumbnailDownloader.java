@@ -1,5 +1,6 @@
 package com.github.a5809909.gps_finder.ImagrLoader;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -20,7 +21,7 @@ public class ThumbnailDownloader<T> extends HandlerThread {
     private ConcurrentMap<T,String> mRequestMap = new ConcurrentHashMap<>();
     private Handler mResponseHandler;
     private ThumbnailDownloadListener<T> mThumbnailDownloadListener;
-
+Context context;
     public interface ThumbnailDownloadListener<T> {
         void onThumbnailDownloaded(T target, Bitmap bitmap);
     }

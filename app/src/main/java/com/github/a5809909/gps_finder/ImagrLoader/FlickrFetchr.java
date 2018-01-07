@@ -1,5 +1,6 @@
 package com.github.a5809909.gps_finder.ImagrLoader;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
@@ -19,7 +20,13 @@ public class FlickrFetchr {
 
     private static final String TAG = "FlickrFetchr";
 
+
     private static final String API_KEY = "23b3976fd2e717eaf8337db6c7656db3";
+    private String lat;
+    private String lon;
+    private String acc;
+    SharedPreferences sPref;
+
 
     public byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
@@ -48,14 +55,22 @@ public class FlickrFetchr {
     }
 
     public List<GalleryItem> fetchItems() {
-
+//        sPref = MainActivity.class.getSharedPreferences("MyPref", MODE_PRIVATE);
+//        lat = sPref.getString("lat", "");
+//        lon = sPref.getString("lng", "").substring(0,7);
+//        acc = sPref.getString("accuracy", "");
+        lat = "53.68949";
+        lon = "23.80334";
+        acc = "2115.0";
         List<GalleryItem> items = new ArrayList<>();
 
         try {
             String url = Uri.parse("https://api.flickr.com/services/rest/")
                     .buildUpon()
-                    .appendQueryParameter("method", "flickr.photos.getRecent")
+                    .appendQueryParameter("method", "flickr.places.findByLatLon")
                     .appendQueryParameter("api_key", API_KEY)
+                    .appendQueryParameter("lat", "53.6894")
+                    .appendQueryParameter("lon", "23.8029")
                     .appendQueryParameter("format", "json")
                     .appendQueryParameter("nojsoncallback", "1")
                     .appendQueryParameter("extras", "url_s")
