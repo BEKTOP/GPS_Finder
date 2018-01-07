@@ -11,13 +11,13 @@ import com.github.a5809909.gps_finder.R;
 
 public class DatabaseFragment extends Fragment {
 
-    public static DatabaseFragment getInstance(){
-        Bundle args= new Bundle();
-        DatabaseFragment fragment = new DatabaseFragment();
-        fragment.setArguments(args);
-
-        return fragment;
-    }
+//    public static DatabaseFragment getInstance(){
+//        Bundle args= new Bundle();
+//        DatabaseFragment fragment = new DatabaseFragment();
+//        fragment.setArguments(args);
+//
+//        return fragment;
+//    }
 
     private View view;
     @Nullable

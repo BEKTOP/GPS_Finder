@@ -1,6 +1,7 @@
 package com.github.a5809909.gps_finder.Activity;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,7 +34,6 @@ import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
 import com.github.a5809909.gps_finder.Fragment.LocationFragment;
 import com.github.a5809909.gps_finder.Fragment.MapFragment;
 import com.github.a5809909.gps_finder.Fragment.OneFragment;
-import com.github.a5809909.gps_finder.Fragment.TwoFragment;
 import com.github.a5809909.gps_finder.ImagrLoader.PhotoGalleryFragment;
 import com.github.a5809909.gps_finder.R;
 import com.github.a5809909.gps_finder.Service.LogService;
@@ -50,7 +50,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements OnClickListener,NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnClickListener, NavigationView.OnNavigationItemSelectedListener {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -66,6 +66,17 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
     private String savedLat;
     private String savedLng;
     private String savedAccuracy;
+    private TextView textViewCellID;
+    private TextView textViewDateAndTime;
+    private TextView textViewLAC;
+    private TextView textViewMNC;
+    private TextView textViewMCC;
+    private TextView textViewLatitude;
+    private TextView textViewLongitude;
+    private TextView textViewAccuracy;
+    private TextView textViewCountry;
+    private TextView textViewCity;
+    private TextView textViewStreet;
 
 
     @Override
@@ -75,9 +86,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
 
         instance = this;
 
+        initViews();
         getShared();
-
-        initToolbar();
+        setToolbar();
         initNavigationView();
         initTabs();
         initFab();
@@ -85,11 +96,39 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
 
     }
 
+    private void initViews() {
+        toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+
+        textViewCellID = findViewById(R.id.text_date_and_time);
+        textViewDateAndTime = findViewById(R.id.text_cell_id);
+        textViewLAC = findViewById(R.id.text_lac);
+        textViewMNC = findViewById(R.id.text_mnc);
+        textViewMCC = findViewById(R.id.text_mcc);
+        textViewLatitude = findViewById(R.id.text_latitude);
+        textViewLongitude = findViewById(R.id.text_longitude);
+        textViewAccuracy = findViewById(R.id.text_accuracy);
+        textViewCountry = findViewById(R.id.text_country);
+        textViewCity = findViewById(R.id.text_city);
+        textViewStreet = findViewById(R.id.text_street);
+
+    }
+
     private void getShared() {
-        sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
-        savedLat = sPref.getString("lat", "").substring(0,7);
-        savedLng = sPref.getString("lng", "").substring(0,7);
-        savedAccuracy = sPref.getString("accuracy", "");
+        try {
+            sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
+            savedLat = sPref.getString("lat", "").substring(0, 7);
+            savedLng = sPref.getString("lng", "").substring(0, 7);
+            savedAccuracy = sPref.getString("accuracy", "");
+
+        } catch (Exception e) {
+            savedLat = "";
+            savedLng = "";
+            savedAccuracy = "";
+        }
+
     }
 
     private void initFab() {
@@ -106,14 +145,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
         setupTabIcons();
     }
 
-    private void initToolbar() {
-        toolbar = findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            setTitle("Lat: " + savedLat + ", Lng: " + savedLng);
+
+    private void setToolbar() {
+        if (savedLat == null || savedLat.isEmpty()) {
+            getSupportActionBar().setTitle(R.string.app_name);
+            toolbar.setSubtitle("");
+        } else {
+
+            getSupportActionBar().setTitle("Lat: " + savedLat + ", Lng: " + savedLng);
             toolbar.setSubtitle("Acc: " + savedAccuracy);
-          //  getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+
     }
 
     private void setupTabIcons() {
@@ -138,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
         adapter.addFrag(new DatabaseFragment(), "DATABASE");
         adapter.addFrag(new MapFragment(), "MAP");
         adapter.addFrag(new PhotoGalleryFragment(), "IMAGES");
-        adapter.addFrag(new DatabaseFragment(), "WEATHER");
+        adapter.addFrag(new OneFragment(), "WEATHER");
         viewPager.setAdapter(adapter);
     }
 
@@ -173,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
 
         }
 
-        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -182,16 +225,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.btn_json_create:
-                getCid();
-                break;
-
-            case R.id.btn_json_send:
-                getLocationClicked(v);
-                break;
 
             case R.id.fab:
-                getLocationClicked(v);
+                checkPermission();
+                getLocationClicked();
                 break;
 
             case R.id.btn_show_database:
@@ -226,7 +263,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
 //        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),60 * 1000, pintent);
     }
 
-    public void getCid() {
+
+    public void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             if (isLocationPermissionsAllowed(this)) {
@@ -235,37 +273,25 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
                 requestStoragePermissions(this, LOCATION_PERMISSION_CODE);
 
             }
+        }
 
-            TelephonyManager tel = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-            Log.i(TAG, "getCid: tel");
-            if (tel != null) {
-                CellLocation loc = tel.getCellLocation();
-                Log.i(TAG, "getCid: cell");
-                if ((loc != null) && (loc instanceof GsmCellLocation)) {
-                    GsmCellLocation gsmLoc = (GsmCellLocation) loc;
-                    Log.i(TAG, "getCid: cid");
-                    String cid = "" + gsmLoc.getCid();
+    }
 
-                    Toast.makeText(this, "cid:" + cid, Toast.LENGTH_SHORT).show();
-                }
-            }
+    public static void requestStoragePermissions(Activity activity, int PERMISSION_REQUEST_CODE) {
+        try {
+            java.lang.String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.READ_PHONE_STATE"};
+            ActivityCompat.requestPermissions(activity, perms, PERMISSION_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+
         }
     }
 
-    public void getLocationClicked(View v) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            if (isLocationPermissionsAllowed(this)) {
-
-            } else {
-                requestStoragePermissions(this, LOCATION_PERMISSION_CODE);
-                if (!isLocationPermissionsAllowed(this)) {
-                    return;
-                }
-            }
+    public void getLocationClicked() {
+        if (!isLocationPermissionsAllowed(this)) {
+            return;
         }
-
-
         TelephonyManager tel = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 
         if (tel != null) {
@@ -282,22 +308,25 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
                 Toast.makeText(this, "cid:" + cid, Toast.LENGTH_SHORT).show();
 
 
+               LocationFragment frag1 = (LocationFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_location);
+                View root = frag1.getView();
+                TextView tw = root.findViewById(R.id.text_lac);
+                tw.setText("mod");
+//                ((TextView) frag1.getView().findViewById(R.id.text_cell_id))
+//                        .setText("Access to Fragment 1 from Activity");
+//
+
+
+                textViewCellID.setText(cid);
+//                textViewLAC.setText(lac);
+//                textViewMCC.setText(mcc);
+//                textViewMNC.setText(mnc);
+
                 new HttpPostTask().execute(cid, lac, mcc, mnc);
             } else {
                 Toast.makeText(instance, "No valid GSM network found",
                         Toast.LENGTH_LONG).show();
             }
-        }
-    }
-
-
-    public static void requestStoragePermissions(Activity activity, int PERMISSION_REQUEST_CODE) {
-        try {
-            java.lang.String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.READ_PHONE_STATE"};
-            ActivityCompat.requestPermissions(activity, perms, PERMISSION_REQUEST_CODE);
-        } catch (Exception e) {
-            e.printStackTrace();
-
         }
     }
 
@@ -343,6 +372,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
                 cellTower.put("locationAreaCode", params[1]);
                 cellTower.put("mobileCountryCode", params[2]);
                 cellTower.put("mobileNetworkCode", params[3]);
+
                 Log.i(TAG, "cellId: " + params[0] +
                         ", locationAreaCode: " + params[1] +
                         ", mobileCountryCode: " + params[2] +
@@ -405,11 +435,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,N
                     ed.putString("lng", lng);
                     ed.putString("accuracy", accuracy);
 
+
                     ed.commit();
                     getShared();
-                    initToolbar();
+                    setToolbar();
                     Toast.makeText(MainActivity.this, "lat:" + lat + ", lng:" + lng + ", acc:" + accuracy, Toast.LENGTH_SHORT).show();
-                    //  setTextViewLocation(lat, lng, accuracy);
+
                 } catch (Exception e) {
                     Toast.makeText(instance, "Exception parsing response: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     e.printStackTrace();

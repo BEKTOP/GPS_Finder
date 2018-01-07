@@ -59,18 +59,19 @@ public class FlickrFetchr {
 //        lat = sPref.getString("lat", "");
 //        lon = sPref.getString("lng", "").substring(0,7);
 //        acc = sPref.getString("accuracy", "");
-        lat = "53.68949";
-        lon = "23.80334";
-        acc = "2115.0";
+//        lat = "53.68949";
+//        lon = "23.80334";
+//        acc = "2115.0";
         List<GalleryItem> items = new ArrayList<>();
 
         try {
             String url = Uri.parse("https://api.flickr.com/services/rest/")
                     .buildUpon()
-                    .appendQueryParameter("method", "flickr.places.findByLatLon")
+//                    .appendQueryParameter("method", "flickr.places.findByLatLon")
+                    .appendQueryParameter("method", "flickr.photos.getRecent")
                     .appendQueryParameter("api_key", API_KEY)
-                    .appendQueryParameter("lat", "53.6894")
-                    .appendQueryParameter("lon", "23.8029")
+//                    .appendQueryParameter("lat", "53.6894")
+//                    .appendQueryParameter("lon", "23.8029")
                     .appendQueryParameter("format", "json")
                     .appendQueryParameter("nojsoncallback", "1")
                     .appendQueryParameter("extras", "url_s")
