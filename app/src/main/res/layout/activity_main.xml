@@ -66,7 +66,6 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
             app:backgroundTint="@color/colorAccent2"
-
             android:src="@drawable/map_marker_radius" />
     </android.support.design.widget.CoordinatorLayout>
 

@@ -27,7 +27,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CompoundButton;
-import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +35,7 @@ import com.github.a5809909.gps_finder.Adapter.ViewPagerAdapter;
 import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
 import com.github.a5809909.gps_finder.Fragment.LocationFragment;
 import com.github.a5809909.gps_finder.Fragment.MapFragment;
-import com.github.a5809909.gps_finder.Fragment.OneFragment;
+import com.github.a5809909.gps_finder.Fragment.WeatherFragment;
 import com.github.a5809909.gps_finder.ImagrLoader.PhotoGalleryFragment;
 import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
@@ -54,6 +53,9 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
+import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.API_KEY;
+import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.LOCATION_PERMISSION_CODE;
+
 public class MainActivity extends AppCompatActivity implements OnClickListener, NavigationView.OnNavigationItemSelectedListener, CompoundButton.OnCheckedChangeListener {
 
     LocationModel mLocationModel;
@@ -62,8 +64,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     SharedPreferences sPref;
     SharedPreferences.Editor sPrefEditor;
-    private static final int LOCATION_PERMISSION_CODE = 855;
-    private static final String API_KEY = "AIzaSyDNsRNkiJddjICdCY9fiFw3U6_nziORLC4";
     //    private DatabaseHelper databaseHelper;
     private TextView textviewLat, textviewLng, textviewAcc;
     private MainActivity instance;
@@ -77,20 +77,22 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        SwitchCompat switchCompat = findViewById(R.id.logServiceOn);
-        if (switchCompat != null) {
-            switchCompat.setOnCheckedChangeListener(this);
-        }
-        mLocationModel = new LocationModel();
         instance = this;
-
+        mLocationModel = new LocationModel();
         getShared();
-        setToolbar();
+        initToolbar();
         initNavigationView();
         initTabs();
         initFab();
 
+        viewPager = findViewById(R.id.view_pager);
+        viewPagerRootView = viewPager.getRootView();
+
+        SwitchCompat switchCompat = viewPagerRootView.findViewById(R.id.logServiceOn);
+
+        if (switchCompat != null) {
+            switchCompat.setOnCheckedChangeListener(this);
+        }
     }
 
 
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         sPrefEditor.putString("lat", mLocationModel.getLat());
         sPrefEditor.putString("lng", mLocationModel.getLng());
         sPrefEditor.putString("accuracy", mLocationModel.getAcc());
-        sPrefEditor.commit();
+        sPrefEditor.apply();
     }
 
     private void initFab() {
@@ -142,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         setupTabIcons();
     }
 
-    private void setToolbar() {
+    private void initToolbar() {
         toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -156,7 +158,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             getSupportActionBar().setTitle("Lat: " + mLocationModel.getLat().substring(0, 7) + ", Lng: " + mLocationModel.getLng().substring(0, 7));
             toolbar.setSubtitle("Acc: " + mLocationModel.getAcc());
         }
+    }
 
+    private void setToolbar() {
+        getSupportActionBar().setTitle("Lat: " + mLocationModel.getLat().substring(0, 7) + ", Lng: " + mLocationModel.getLng().substring(0, 7));
+        toolbar.setSubtitle("Acc: " + mLocationModel.getAcc());
     }
 
     private void setupTabIcons() {
@@ -179,18 +185,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         adapter.addFrag(new DatabaseFragment(), "DATABASE");
         adapter.addFrag(new MapFragment(), "MAP");
         adapter.addFrag(new PhotoGalleryFragment(), "IMAGES");
-        adapter.addFrag(new OneFragment(), "WEATHER");
+        adapter.addFrag(new WeatherFragment(), "WEATHER");
         viewPager.setAdapter(adapter);
     }
 
     private void initNavigationView() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
     }
@@ -198,19 +204,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.show_point) {
-            // Handle the camera action
+
         } else if (id == R.id.database) {
-
         } else if (id == R.id.show_map) {
-
         } else if (id == R.id.images) {
-
         } else if (id == R.id.weather) {
-
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -306,8 +306,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     private void setTextViewFragment() {
-        viewPager = findViewById(R.id.view_pager);
-        viewPagerRootView = viewPager.getRootView();
+
         final TextView textViewCellID, textViewDateAndTime, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude,
                 textViewAccuracy, textViewCountry, textViewCity, textViewStreet;
         try {
@@ -368,6 +367,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             String result = null;
 
             HttpClient httpclient = new DefaultHttpClient();
+
             HttpPost httpost = new HttpPost("https://www.googleapis.com/geolocation/v1/geolocate?key=" + API_KEY);
 
             StringEntity se;
@@ -435,7 +435,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                     mLocationModel.setLng(location.getString("lng"));
 
                     setShared();
-                    getShared();
                     setTextViewFragment();
                     setToolbar();
                     Toast.makeText(MainActivity.this, "lat:" + mLocationModel.getLat() + ", lng:" + mLocationModel.getLng() + ", acc:" + mLocationModel.getAcc(), Toast.LENGTH_SHORT).show();
@@ -471,27 +470,5 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         super.onDestroy();
 
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 
 }
