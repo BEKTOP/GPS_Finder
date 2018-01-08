@@ -3,15 +3,12 @@ package com.github.a5809909.gps_finder.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.github.a5809909.gps_finder.Activity.MainActivity;
 import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
 
@@ -73,6 +70,8 @@ LocationModel mLocationModel;
     private void getShared() {
         try {
             sPref = this.getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+
+            mLocationModel.setDateAndTime(sPref.getString("dayAndTime", ""));
             mLocationModel.setCellId(sPref.getString("cellId", ""));
             mLocationModel.setLac(sPref.getString("lac", ""));
             mLocationModel.setMcc(sPref.getString("mcc", ""));

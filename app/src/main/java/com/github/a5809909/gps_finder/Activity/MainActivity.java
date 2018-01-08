@@ -51,16 +51,19 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.API_KEY;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.LOCATION_PERMISSION_CODE;
 
-public class MainActivity extends AppCompatActivity implements OnClickListener, NavigationView.OnNavigationItemSelectedListener, CompoundButton.OnCheckedChangeListener {
-
+public class MainActivity extends AppCompatActivity implements OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+    SimpleDateFormat formatter;
     LocationModel mLocationModel;
     private Toolbar toolbar;
     private TabLayout tabLayout;
+    private DrawerLayout drawer;
 
     SharedPreferences sPref;
     SharedPreferences.Editor sPrefEditor;
@@ -88,23 +91,24 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         viewPager = findViewById(R.id.view_pager);
         viewPagerRootView = viewPager.getRootView();
 
-        SwitchCompat switchCompat = viewPagerRootView.findViewById(R.id.logServiceOn);
-
-        if (switchCompat != null) {
-            switchCompat.setOnCheckedChangeListener(this);
-        }
+//        SwitchCompat switchCompat = viewPagerRootView.findViewById(R.id.logServiceOn);
+//
+//        if (switchCompat != null) {
+//            switchCompat.setOnCheckedChangeListener(this);
+//        }
     }
 
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Toast.makeText(this, "Отслеживание переключения: " + (isChecked ? "on" : "off"),
-                Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//        Toast.makeText(this, "Отслеживание переключения: " + (isChecked ? "on" : "off"),
+//                Toast.LENGTH_SHORT).show();
+//    }
 
     private void getShared() {
         try {
             sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
+            mLocationModel.setDateAndTime(sPref.getString("dayAndTime", ""));
             mLocationModel.setCellId(sPref.getString("cellId", ""));
             mLocationModel.setLac(sPref.getString("lac", ""));
             mLocationModel.setMcc(sPref.getString("mcc", ""));
@@ -120,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     private void setShared() {
         sPrefEditor = sPref.edit();
+        sPrefEditor.putString("dayAndTime", mLocationModel.getDateAndTime());
         sPrefEditor.putString("cellId", mLocationModel.getCellId());
         sPrefEditor.putString("lac", mLocationModel.getLac());
         sPrefEditor.putString("mcc", mLocationModel.getMcc());
@@ -131,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     private void initFab() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(this);
     }
 
@@ -190,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     private void initNavigationView() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -198,19 +203,24 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.show_point) {
 
+        if (id == R.id.show_point) {
+            viewPager.setCurrentItem(0);
         } else if (id == R.id.database) {
+            viewPager.setCurrentItem(1);
         } else if (id == R.id.show_map) {
+            viewPager.setCurrentItem(2);
         } else if (id == R.id.images) {
+            viewPager.setCurrentItem(3);
         } else if (id == R.id.weather) {
+            viewPager.setCurrentItem(4);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -289,6 +299,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 GsmCellLocation gsmLoc = (GsmCellLocation) loc;
                 String op = tel.getNetworkOperator();
 
+                formatter = new SimpleDateFormat("dd/MM/yyyy  HH:mm:ss");
+                formatter.setTimeZone(TimeZone.getTimeZone("Europe/Minsk"));
+
+                mLocationModel.setDateAndTime(formatter.format(System.currentTimeMillis()));
                 mLocationModel.setCellId("" + gsmLoc.getCid());
                 mLocationModel.setLac("" + gsmLoc.getLac());
                 mLocationModel.setMcc(op.substring(0, 3));
@@ -346,6 +360,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
         return true;
     }
+
 
     private class HttpPostTask extends AsyncTask<String, Void, String> {
 
@@ -447,7 +462,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
 
     }
-
+    @Override
+    public void onBackPressed() {
+        assert drawer != null;
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 //    private void saveInSql(PhoneState result) {
 //        databaseHelper = new DatabaseHelper(this);
 //        databaseHelper.addUser(result);

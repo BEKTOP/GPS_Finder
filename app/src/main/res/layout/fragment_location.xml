@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              tools:context="com.github.a5809909.gps_finder.Fragment.LocationFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.github.a5809909.gps_finder.Fragment.LocationFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:text="Date / Time: "
             android:textAllCaps="true"
             android:textColor="@color/colorPrimary"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text_date_and_time"
@@ -28,7 +28,7 @@
             android:text="Date / Time"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimaryText"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
 
     </LinearLayout>
@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
 
-        android:background="@color/colorPrimary"/>
+        android:background="@color/colorPrimary" />
 
 
     <LinearLayout
@@ -50,59 +50,102 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="2dp">
+
 
             <TextView
-                android:id="@+id/text_view_cell_id"
+                android:id="@+id/text_view_latitude"
+                style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-
-                android:text="Cell ID: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
+                android:text="Latitude: " />
 
             <TextView
-                android:id="@+id/text_view_lac"
+                android:id="@+id/text_view_longitude"
+                style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                android:maxLines="1"
-                android:text="LAC: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
+                android:text="Longitude: " />
+
+            <TextView
+                android:id="@+id/text_view_accuracy"
+                style="@style/style_text_view_primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Accuracy: " />
+
+            <TextView
+                android:id="@+id/text_view_country"
+                style="@style/style_text_view_primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Country: " />
+
+            <TextView
+                android:id="@+id/text_view_city"
+                style="@style/style_text_view_primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="City: " />
+
+            <TextView
+                android:id="@+id/text_view_street"
+                style="@style/style_text_view_primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Street: " />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text_cell_id"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-
-                android:text="Cell ID: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold"/>
+            android:layout_weight="1.2"
+            android:orientation="vertical"
+            android:paddingTop="2dp">
 
             <TextView
-                android:id="@+id/text_lac"
+                android:id="@+id/text_latitude"
+                style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="LAC: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold"/>
+                android:text="Latitude" />
+
+            <TextView
+                android:id="@+id/text_longitude"
+                style="@style/style_text_view_primary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Longitude" />
+
+            <TextView
+                android:id="@+id/text_accuracy"
+                style="@style/style_text_view_primary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Accuracy" />
+
+            <TextView
+                android:id="@+id/text_country"
+                style="@style/style_text_view_primary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Country" />
+
+            <TextView
+                android:id="@+id/text_city"
+                style="@style/style_text_view_primary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="City" />
+
+            <TextView
+                android:id="@+id/text_street"
+                style="@style/style_text_view_primary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Street" />
 
         </LinearLayout>
 
@@ -110,29 +153,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="2dp">
+
+
+            <TextView
+                android:id="@+id/text_view_cell_id"
+                style="@style/style_text_view_primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cell ID: " />
+
+            <TextView
+                android:id="@+id/text_view_lac"
+                style="@style/style_text_view_primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LAC: " />
 
             <TextView
                 android:id="@+id/text_view_mcc"
+                style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-
-                android:text="MCC "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
+                android:text="MCC: " />
 
             <TextView
                 android:id="@+id/text_view_mnc"
+                style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                android:maxLines="1"
-                android:text="MNC: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
+
+                android:text="MNC: " />
 
         </LinearLayout>
 
@@ -140,28 +192,35 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_mcc"
+                android:id="@+id/text_cell_id"
+                style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="MCC "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold"/>
+                android:text="Cell ID" />
+
+            <TextView
+                android:id="@+id/text_lac"
+                style="@style/style_text_view_primary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LAC" />
+
+            <TextView
+                android:id="@+id/text_mcc"
+                style="@style/style_text_view_primary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="MCC" />
 
             <TextView
                 android:id="@+id/text_mnc"
+                style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="MNC: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold"/>
+                android:text="MNC" />
 
         </LinearLayout>
 
@@ -180,71 +239,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/text_view_latitude"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:gravity="end"
-                android:text="Latitude: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/text_view_longitude"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:gravity="end"
-                android:text="Longitude: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/text_view_accuracy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:gravity="end"
-                android:text="Accuracy: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/text_view_country"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:gravity="end"
-                android:text="Country: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/text_view_city"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:gravity="end"
-                android:text="City: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/text_view_street"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:gravity="end"
-                android:text="Street: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -254,92 +248,39 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/text_latitude"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:text="Latitude: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/text_longitude"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:text="Longitude: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/text_accuracy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:text="Accuracy: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/text_country"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:text="Country: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/text_city"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:text="City: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/text_street"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:text="Street: "
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold"/>
 
         </LinearLayout>
 
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <Button
+            android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save in database"/>
+            android:text="Save in database" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/logServiceOn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_gravity="end"
+            android:layout_marginRight="12dp"
             android:text="LogService"
             android:textOff="OFF"
             android:textOn="ON"
             app:showText="true"
-            app:trackTint="@color/colorPrimary"/>
+            app:trackTint="@color/colorPrimary" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </LinearLayout>
