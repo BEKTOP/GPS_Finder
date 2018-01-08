@@ -17,7 +17,6 @@ import com.github.a5809909.gps_finder.R;
 
 public class LocationFragment extends Fragment {
 LocationModel mLocationModel;
-    Context context;
     SharedPreferences sPref;
     TextView textViewDateAndTime, textViewCellID, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude, textViewAccuracy,
             textViewCountry, textViewCity, textViewStreet;

@@ -1,9 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.github.a5809909.gps_finder.Fragment.LocationFragment">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              tools:context="com.github.a5809909.gps_finder.Fragment.LocationFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             android:text="Date / Time: "
             android:textAllCaps="true"
             android:textColor="@color/colorPrimary"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/text_date_and_time"
@@ -27,7 +28,7 @@
             android:text="Date / Time"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimaryText"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
 
     </LinearLayout>
@@ -36,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
 
-        android:background="@color/colorPrimary" />
+        android:background="@color/colorPrimary"/>
 
 
     <LinearLayout
@@ -60,7 +61,7 @@
                 android:text="Cell ID: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_view_lac"
@@ -71,7 +72,7 @@
                 android:text="LAC: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -91,7 +92,7 @@
                 android:text="Cell ID: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_lac"
@@ -101,7 +102,7 @@
                 android:text="LAC: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -120,7 +121,7 @@
                 android:text="MCC "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_view_mnc"
@@ -131,7 +132,7 @@
                 android:text="MNC: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -150,7 +151,7 @@
                 android:text="MCC "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_mnc"
@@ -160,7 +161,7 @@
                 android:text="MNC: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -188,7 +189,7 @@
                 android:text="Latitude: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_view_longitude"
@@ -199,7 +200,7 @@
                 android:text="Longitude: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_view_accuracy"
@@ -210,7 +211,7 @@
                 android:text="Accuracy: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_view_country"
@@ -221,7 +222,7 @@
                 android:text="Country: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_view_city"
@@ -232,7 +233,7 @@
                 android:text="City: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_view_street"
@@ -243,7 +244,7 @@
                 android:text="Street: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -261,7 +262,7 @@
                 android:text="Latitude: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_longitude"
@@ -271,7 +272,7 @@
                 android:text="Longitude: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_accuracy"
@@ -281,7 +282,7 @@
                 android:text="Accuracy: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_country"
@@ -291,7 +292,7 @@
                 android:text="Country: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_city"
@@ -301,7 +302,7 @@
                 android:text="City: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/text_street"
@@ -311,24 +312,35 @@
                 android:text="Street: "
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
 
     </LinearLayout>
 
-
-
-<Button
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Save in database"/>
-
-    <Switch
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="LogService" />
+        android:orientation="vertical">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save in database"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/logServiceOn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LogService"
+            android:textOff="OFF"
+            android:textOn="ON"
+            app:showText="true"
+            app:trackTint="@color/colorPrimary"/>
+
+    </LinearLayout>
+
 
 </LinearLayout>
 

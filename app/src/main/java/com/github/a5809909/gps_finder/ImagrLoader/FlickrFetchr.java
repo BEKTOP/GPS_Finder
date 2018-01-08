@@ -16,12 +16,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.API_KEY_FETCHR;
+
 public class FlickrFetchr {
 
     private static final String TAG = "FlickrFetchr";
 
 
-    private static final String API_KEY = "23b3976fd2e717eaf8337db6c7656db3";
+
     private String lat;
     private String lon;
     private String acc;
@@ -69,7 +71,7 @@ public class FlickrFetchr {
                     .buildUpon()
 //                    .appendQueryParameter("method", "flickr.places.findByLatLon")
                     .appendQueryParameter("method", "flickr.photos.getRecent")
-                    .appendQueryParameter("api_key", API_KEY)
+                    .appendQueryParameter("api_key", API_KEY_FETCHR)
 //                    .appendQueryParameter("lat", "53.6894")
 //                    .appendQueryParameter("lon", "23.8029")
                     .appendQueryParameter("format", "json")

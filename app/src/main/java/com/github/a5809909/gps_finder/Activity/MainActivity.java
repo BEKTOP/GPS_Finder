@@ -17,6 +17,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
@@ -25,6 +26,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.CompoundButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +54,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnClickListener, NavigationView.OnNavigationItemSelectedListener, CompoundButton.OnCheckedChangeListener {
 
     LocationModel mLocationModel;
     private Toolbar toolbar;
@@ -73,6 +77,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SwitchCompat switchCompat = findViewById(R.id.logServiceOn);
+        if (switchCompat != null) {
+            switchCompat.setOnCheckedChangeListener(this);
+        }
         mLocationModel = new LocationModel();
         instance = this;
 
@@ -82,6 +91,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         initTabs();
         initFab();
 
+    }
+
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Toast.makeText(this, "Отслеживание переключения: " + (isChecked ? "on" : "off"),
+                Toast.LENGTH_SHORT).show();
     }
 
     private void getShared() {
@@ -152,11 +168,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 R.drawable.weather_partlycloudy
         };
 
-        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
-        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
-        tabLayout.getTabAt(3).setIcon(tabIcons[3]);
-        tabLayout.getTabAt(4).setIcon(tabIcons[4]);
+        for (int i = 0; i <= 4; i++) {
+            tabLayout.getTabAt(i).setIcon(tabIcons[i]);
+        }
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -204,6 +218,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         return true;
     }
 
+    public void onSwitchClicked(View view) {
+        boolean on = ((Switch) view).isChecked();
+        if (on) {
+            Intent startIntent = new Intent(MainActivity.this, LogService.class);
+            startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+            startService(startIntent);
+        } else {
+            Intent stopIntent = new Intent(MainActivity.this, LogService.class);
+            stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+            startService(stopIntent);
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -213,26 +240,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 getLocationClicked();
                 break;
 
-            case R.id.btn_show_database:
-                Intent intentDataBase = new Intent(getApplicationContext(), DataActivity.class);
-                startActivity(intentDataBase);
-                break;
-
-//            case R.id.btn_maps:
-//                Intent intentMap = new Intent(getApplicationContext(), MapActivity.class);
-//                startActivity(intentMap);
-//                break;
-
-            case R.id.btn_show_pictures:
-                Intent startIntent = new Intent(MainActivity.this, LogService.class);
-                startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
-                startService(startIntent);
-                break;
-            case R.id.btn_show_weather:
-                Intent stopIntent = new Intent(MainActivity.this, LogService.class);
-                stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
-                startService(stopIntent);
-                break;
         }
     }
 
@@ -268,13 +275,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
     }
 
-    public interface OnActivityDataListener {
-
-        void onActivityDataListener(String string);
-    }
-
-    private OnActivityDataListener mListener;
-
     public void getLocationClicked() {
         if (!isLocationPermissionsAllowed(this)) {
             return;
@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 mLocationModel.setLac("" + gsmLoc.getLac());
                 mLocationModel.setMcc(op.substring(0, 3));
                 mLocationModel.setMnc(op.substring(3));
-                Toast.makeText(this, "cid:" + mLocationModel.getCellId(), Toast.LENGTH_SHORT).show();
+                //              Toast.makeText(this, "cid:" + mLocationModel.getCellId(), Toast.LENGTH_SHORT).show();
 
                 setTextViewFragment();
 
@@ -310,28 +310,31 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         viewPagerRootView = viewPager.getRootView();
         final TextView textViewCellID, textViewDateAndTime, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude,
                 textViewAccuracy, textViewCountry, textViewCity, textViewStreet;
+        try {
 
-        textViewDateAndTime = viewPagerRootView.findViewById(R.id.text_date_and_time);
-        textViewCellID = viewPagerRootView.findViewById(R.id.text_cell_id);
-        textViewLAC = viewPagerRootView.findViewById(R.id.text_lac);
-        textViewMNC = viewPagerRootView.findViewById(R.id.text_mnc);
-        textViewMCC = viewPagerRootView.findViewById(R.id.text_mcc);
-        textViewLatitude = viewPagerRootView.findViewById(R.id.text_latitude);
-        textViewLongitude = viewPagerRootView.findViewById(R.id.text_longitude);
-        textViewAccuracy = viewPagerRootView.findViewById(R.id.text_accuracy);
-        textViewCountry = viewPagerRootView.findViewById(R.id.text_country);
-        textViewCity = viewPagerRootView.findViewById(R.id.text_city);
-        textViewStreet = viewPagerRootView.findViewById(R.id.text_street);
+            textViewDateAndTime = viewPagerRootView.findViewById(R.id.text_date_and_time);
+            textViewCellID = viewPagerRootView.findViewById(R.id.text_cell_id);
+            textViewLAC = viewPagerRootView.findViewById(R.id.text_lac);
+            textViewMNC = viewPagerRootView.findViewById(R.id.text_mnc);
+            textViewMCC = viewPagerRootView.findViewById(R.id.text_mcc);
+            textViewLatitude = viewPagerRootView.findViewById(R.id.text_latitude);
+            textViewLongitude = viewPagerRootView.findViewById(R.id.text_longitude);
+            textViewAccuracy = viewPagerRootView.findViewById(R.id.text_accuracy);
+            textViewCountry = viewPagerRootView.findViewById(R.id.text_country);
+            textViewCity = viewPagerRootView.findViewById(R.id.text_city);
+            textViewStreet = viewPagerRootView.findViewById(R.id.text_street);
 
-        textViewDateAndTime.setText(mLocationModel.getDateAndTime());
-        textViewCellID.setText(mLocationModel.getCellId());
-        textViewLAC.setText(mLocationModel.getLac());
-        textViewMCC.setText(mLocationModel.getMcc());
-        textViewMNC.setText(mLocationModel.getMnc());
-        textViewLatitude.setText(mLocationModel.getLat());
-        textViewLongitude.setText(mLocationModel.getLng());
-        textViewAccuracy.setText(mLocationModel.getAcc());
+            textViewDateAndTime.setText(mLocationModel.getDateAndTime());
+            textViewCellID.setText(mLocationModel.getCellId());
+            textViewLAC.setText(mLocationModel.getLac());
+            textViewMCC.setText(mLocationModel.getMcc());
+            textViewMNC.setText(mLocationModel.getMnc());
+            textViewLatitude.setText(mLocationModel.getLat());
+            textViewLongitude.setText(mLocationModel.getLng());
+            textViewAccuracy.setText(mLocationModel.getAcc());
+        } catch (Exception e) {
 
+        }
     }
 
     public static boolean isLocationPermissionsAllowed(Activity activity) {
