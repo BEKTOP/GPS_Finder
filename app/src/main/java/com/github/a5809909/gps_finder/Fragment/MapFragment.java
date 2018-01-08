@@ -65,7 +65,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap map) {
-        SharedPreferences sPref = this.getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        sPref = this.getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         String savedLat = sPref.getString("lat", "");
         String savedLng = sPref.getString("lng", "");
         double lat = Double.parseDouble(savedLat);

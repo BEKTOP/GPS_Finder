@@ -1,7 +1,6 @@
 package com.github.a5809909.gps_finder.Activity;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +34,7 @@ import com.github.a5809909.gps_finder.Fragment.LocationFragment;
 import com.github.a5809909.gps_finder.Fragment.MapFragment;
 import com.github.a5809909.gps_finder.Fragment.OneFragment;
 import com.github.a5809909.gps_finder.ImagrLoader.PhotoGalleryFragment;
+import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
 import com.github.a5809909.gps_finder.Service.LogService;
 import com.github.a5809909.gps_finder.Utilities.Constants;
@@ -51,11 +51,13 @@ import org.json.JSONObject;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+
+    LocationModel mLocationModel;
     private Toolbar toolbar;
     private TabLayout tabLayout;
-    private ViewPager viewPager;
 
     SharedPreferences sPref;
+    SharedPreferences.Editor sPrefEditor;
     private static final int LOCATION_PERMISSION_CODE = 855;
     private static final String API_KEY = "AIzaSyDNsRNkiJddjICdCY9fiFw3U6_nziORLC4";
     //    private DatabaseHelper databaseHelper;
@@ -63,72 +65,51 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     private MainActivity instance;
     private static final String TAG = "Main";
     private DrawerLayout mDrawerLayout;
-    private String savedLat;
-    private String savedLng;
-    private String savedAccuracy;
-    private TextView textViewCellID;
-    private TextView textViewDateAndTime;
-    private TextView textViewLAC;
-    private TextView textViewMNC;
-    private TextView textViewMCC;
-    private TextView textViewLatitude;
-    private TextView textViewLongitude;
-    private TextView textViewAccuracy;
-    private TextView textViewCountry;
-    private TextView textViewCity;
-    private TextView textViewStreet;
 
+    private ViewPager viewPager;
+    View viewPagerRootView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mLocationModel = new LocationModel();
         instance = this;
 
-        initViews();
         getShared();
         setToolbar();
         initNavigationView();
         initTabs();
         initFab();
 
-
-    }
-
-    private void initViews() {
-        toolbar = findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-        }
-
-        textViewCellID = findViewById(R.id.text_date_and_time);
-        textViewDateAndTime = findViewById(R.id.text_cell_id);
-        textViewLAC = findViewById(R.id.text_lac);
-        textViewMNC = findViewById(R.id.text_mnc);
-        textViewMCC = findViewById(R.id.text_mcc);
-        textViewLatitude = findViewById(R.id.text_latitude);
-        textViewLongitude = findViewById(R.id.text_longitude);
-        textViewAccuracy = findViewById(R.id.text_accuracy);
-        textViewCountry = findViewById(R.id.text_country);
-        textViewCity = findViewById(R.id.text_city);
-        textViewStreet = findViewById(R.id.text_street);
-
     }
 
     private void getShared() {
         try {
             sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
-            savedLat = sPref.getString("lat", "").substring(0, 7);
-            savedLng = sPref.getString("lng", "").substring(0, 7);
-            savedAccuracy = sPref.getString("accuracy", "");
+            mLocationModel.setCellId(sPref.getString("cellId", ""));
+            mLocationModel.setLac(sPref.getString("lac", ""));
+            mLocationModel.setMcc(sPref.getString("mcc", ""));
+            mLocationModel.setMnc(sPref.getString("mnc", ""));
+            mLocationModel.setLat(sPref.getString("lat", ""));
+            mLocationModel.setLng(sPref.getString("lng", ""));
+            mLocationModel.setAcc(sPref.getString("accuracy", ""));
 
         } catch (Exception e) {
-            savedLat = "";
-            savedLng = "";
-            savedAccuracy = "";
+            Toast.makeText(this, "1 time", Toast.LENGTH_LONG).show();
         }
+    }
 
+    private void setShared() {
+        sPrefEditor = sPref.edit();
+        sPrefEditor.putString("cellId", mLocationModel.getCellId());
+        sPrefEditor.putString("lac", mLocationModel.getLac());
+        sPrefEditor.putString("mcc", mLocationModel.getMcc());
+        sPrefEditor.putString("mnc", mLocationModel.getMnc());
+        sPrefEditor.putString("lat", mLocationModel.getLat());
+        sPrefEditor.putString("lng", mLocationModel.getLng());
+        sPrefEditor.putString("accuracy", mLocationModel.getAcc());
+        sPrefEditor.commit();
     }
 
     private void initFab() {
@@ -145,17 +126,20 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         setupTabIcons();
     }
 
-
     private void setToolbar() {
-        if (savedLat == null || savedLat.isEmpty()) {
+        toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+
+        if (mLocationModel.getLat() == null || mLocationModel.getLat().isEmpty()) {
             getSupportActionBar().setTitle(R.string.app_name);
             toolbar.setSubtitle("");
         } else {
 
-            getSupportActionBar().setTitle("Lat: " + savedLat + ", Lng: " + savedLng);
-            toolbar.setSubtitle("Acc: " + savedAccuracy);
+            getSupportActionBar().setTitle("Lat: " + mLocationModel.getLat().substring(0, 7) + ", Lng: " + mLocationModel.getLng().substring(0, 7));
+            toolbar.setSubtitle("Acc: " + mLocationModel.getAcc());
         }
-
 
     }
 
@@ -195,7 +179,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -224,7 +207,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
 
             case R.id.fab:
                 checkPermission();
@@ -263,7 +245,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 //        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),60 * 1000, pintent);
     }
 
-
     public void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -287,11 +268,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
     }
 
+    public interface OnActivityDataListener {
+
+        void onActivityDataListener(String string);
+    }
+
+    private OnActivityDataListener mListener;
 
     public void getLocationClicked() {
         if (!isLocationPermissionsAllowed(this)) {
             return;
         }
+
         TelephonyManager tel = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 
         if (tel != null) {
@@ -301,33 +289,49 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 GsmCellLocation gsmLoc = (GsmCellLocation) loc;
                 String op = tel.getNetworkOperator();
 
-                String cid = "" + gsmLoc.getCid();
-                String lac = "" + gsmLoc.getLac();
-                String mcc = op.substring(0, 3);
-                String mnc = op.substring(3);
-                Toast.makeText(this, "cid:" + cid, Toast.LENGTH_SHORT).show();
+                mLocationModel.setCellId("" + gsmLoc.getCid());
+                mLocationModel.setLac("" + gsmLoc.getLac());
+                mLocationModel.setMcc(op.substring(0, 3));
+                mLocationModel.setMnc(op.substring(3));
+                Toast.makeText(this, "cid:" + mLocationModel.getCellId(), Toast.LENGTH_SHORT).show();
 
+                setTextViewFragment();
 
-               LocationFragment frag1 = (LocationFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_location);
-                View root = frag1.getView();
-                TextView tw = root.findViewById(R.id.text_lac);
-                tw.setText("mod");
-//                ((TextView) frag1.getView().findViewById(R.id.text_cell_id))
-//                        .setText("Access to Fragment 1 from Activity");
-//
-
-
-                textViewCellID.setText(cid);
-//                textViewLAC.setText(lac);
-//                textViewMCC.setText(mcc);
-//                textViewMNC.setText(mnc);
-
-                new HttpPostTask().execute(cid, lac, mcc, mnc);
+                new HttpPostTask().execute();
             } else {
                 Toast.makeText(instance, "No valid GSM network found",
                         Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void setTextViewFragment() {
+        viewPager = findViewById(R.id.view_pager);
+        viewPagerRootView = viewPager.getRootView();
+        final TextView textViewCellID, textViewDateAndTime, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude,
+                textViewAccuracy, textViewCountry, textViewCity, textViewStreet;
+
+        textViewDateAndTime = viewPagerRootView.findViewById(R.id.text_date_and_time);
+        textViewCellID = viewPagerRootView.findViewById(R.id.text_cell_id);
+        textViewLAC = viewPagerRootView.findViewById(R.id.text_lac);
+        textViewMNC = viewPagerRootView.findViewById(R.id.text_mnc);
+        textViewMCC = viewPagerRootView.findViewById(R.id.text_mcc);
+        textViewLatitude = viewPagerRootView.findViewById(R.id.text_latitude);
+        textViewLongitude = viewPagerRootView.findViewById(R.id.text_longitude);
+        textViewAccuracy = viewPagerRootView.findViewById(R.id.text_accuracy);
+        textViewCountry = viewPagerRootView.findViewById(R.id.text_country);
+        textViewCity = viewPagerRootView.findViewById(R.id.text_city);
+        textViewStreet = viewPagerRootView.findViewById(R.id.text_street);
+
+        textViewDateAndTime.setText(mLocationModel.getDateAndTime());
+        textViewCellID.setText(mLocationModel.getCellId());
+        textViewLAC.setText(mLocationModel.getLac());
+        textViewMCC.setText(mLocationModel.getMcc());
+        textViewMNC.setText(mLocationModel.getMnc());
+        textViewLatitude.setText(mLocationModel.getLat());
+        textViewLongitude.setText(mLocationModel.getLng());
+        textViewAccuracy.setText(mLocationModel.getAcc());
+
     }
 
     public static boolean isLocationPermissionsAllowed(Activity activity) {
@@ -340,7 +344,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
         return true;
     }
-
 
     private class HttpPostTask extends AsyncTask<String, Void, String> {
 
@@ -368,15 +371,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
             try {
                 JSONObject cellTower = new JSONObject();
-                cellTower.put("cellId", params[0]);
-                cellTower.put("locationAreaCode", params[1]);
-                cellTower.put("mobileCountryCode", params[2]);
-                cellTower.put("mobileNetworkCode", params[3]);
+                cellTower.put("cellId", mLocationModel.getCellId());
+                cellTower.put("locationAreaCode", mLocationModel.getLac());
+                cellTower.put("mobileCountryCode", mLocationModel.getMcc());
+                cellTower.put("mobileNetworkCode", mLocationModel.getMnc());
 
-                Log.i(TAG, "cellId: " + params[0] +
-                        ", locationAreaCode: " + params[1] +
-                        ", mobileCountryCode: " + params[2] +
-                        ", mobileNetworkCode: " + params[3]);
+                Log.i(TAG, "cellId: " + mLocationModel.getCellId() +
+                        ", locationAreaCode: " + mLocationModel.getLac() +
+                        ", mobileCountryCode: " + mLocationModel.getMcc() +
+                        ", mobileNetworkCode: " + mLocationModel.getMnc());
                 JSONArray cellTowers = new JSONArray();
                 cellTowers.put(cellTower);
 
@@ -423,23 +426,16 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 try {
                     JSONObject jsonResult = new JSONObject(result);
                     JSONObject location = jsonResult.getJSONObject("location");
-                    String accuracy = jsonResult.getString("accuracy");
-                    String lat, lng;
 
-                    lat = location.getString("lat");
-                    lng = location.getString("lng");
+                    mLocationModel.setAcc(jsonResult.getString("accuracy"));
+                    mLocationModel.setLat(location.getString("lat"));
+                    mLocationModel.setLng(location.getString("lng"));
 
-                    sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
-                    SharedPreferences.Editor ed = sPref.edit();
-                    ed.putString("lat", lat);
-                    ed.putString("lng", lng);
-                    ed.putString("accuracy", accuracy);
-
-
-                    ed.commit();
+                    setShared();
                     getShared();
+                    setTextViewFragment();
                     setToolbar();
-                    Toast.makeText(MainActivity.this, "lat:" + lat + ", lng:" + lng + ", acc:" + accuracy, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "lat:" + mLocationModel.getLat() + ", lng:" + mLocationModel.getLng() + ", acc:" + mLocationModel.getAcc(), Toast.LENGTH_SHORT).show();
 
                 } catch (Exception e) {
                     Toast.makeText(instance, "Exception parsing response: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -450,7 +446,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     }
 
-
 //    private void saveInSql(PhoneState result) {
 //        databaseHelper = new DatabaseHelper(this);
 //        databaseHelper.addUser(result);
@@ -460,6 +455,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     @Override
     protected void onStart() {
         super.onStart();
+        getShared();
     }
 
     @Override
@@ -470,8 +466,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
 
+    }
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
@@ -494,6 +490,5 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 //
 //        return super.onOptionsItemSelected(item);
 //    }
-
 
 }
