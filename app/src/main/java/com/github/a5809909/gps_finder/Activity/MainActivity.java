@@ -57,6 +57,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -429,20 +430,23 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 mLocationModel.setAcc(jsonResult.getString("accuracy"));
                 mLocationModel.setLat(location.getString("lat"));
                 mLocationModel.setLng(location.getString("lng"));
-                String latlng = mLocationModel.getLat() +"%2C"+mLocationModel.getLng();
+                String latlng = mLocationModel.getLat() + ","+mLocationModel.getLng();
 
                 List<GalleryItem> items = new ArrayList<>();
                 String url = Uri.parse(GOOGLE_GEOCODING_URI)
                         .buildUpon()
                         .appendQueryParameter("key", GOOGLE_GEOCODING_API_KEY)
                         .appendQueryParameter("latlng", latlng)
+                        .appendQueryParameter("language", "ru")
+                      //  .appendQueryParameter("result_type", "country|street_address|postal_code")
+
                         .build().toString();
+
                 String jsonString = getUrlString(url);
                 Log.i(TAG, "Received JSON: " + jsonString);
                 JSONObject jsonBody = new JSONObject(jsonString);
-                parseItems(items, jsonBody);
-
-
+                JSONObject addressJsonObject = jsonBody.getJSONObject("results");
+                JSONArray photoJsonArray = addressJsonObject.getJSONArray("formatted_address");
             } catch (Exception e) {
                 final String err = e.getMessage();
                 runOnUiThread(new Runnable() {
