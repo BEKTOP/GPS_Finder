@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
@@ -26,7 +26,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +35,7 @@ import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
 import com.github.a5809909.gps_finder.Fragment.LocationFragment;
 import com.github.a5809909.gps_finder.Fragment.MapFragment;
 import com.github.a5809909.gps_finder.Fragment.WeatherFragment;
+import com.github.a5809909.gps_finder.ImagrLoader.GalleryItem;
 import com.github.a5809909.gps_finder.ImagrLoader.PhotoGalleryFragment;
 import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
@@ -49,14 +49,26 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
-import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.API_KEY;
+import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.FETCHR_API_KEY;
+import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOCODING_URI;
+import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOLOCATE_API_KEY;
+import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOLOCATE_URI;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.LOCATION_PERMISSION_CODE;
+import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOCODING_API_KEY;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener, NavigationView.OnNavigationItemSelectedListener {
     SimpleDateFormat formatter;
@@ -380,13 +392,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         protected String doInBackground(String... params) {
 
             String result = null;
-
             HttpClient httpclient = new DefaultHttpClient();
-
-            HttpPost httpost = new HttpPost("https://www.googleapis.com/geolocation/v1/geolocate?key=" + API_KEY);
-
+            HttpPost httpost = new HttpPost(GOOGLE_GEOLOCATE_URI + GOOGLE_GEOLOCATE_API_KEY);
             StringEntity se;
-
             try {
                 JSONObject cellTower = new JSONObject();
                 cellTower.put("cellId", mLocationModel.getCellId());
@@ -406,16 +414,35 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
                 se = new StringEntity(rootObject.toString());
                 se.setContentType("application/json");
-
+                mLocationModel.setJson_first(rootObject.toString());
                 httpost.setEntity(se);
                 httpost.setHeader("Accept", "application/json");
                 httpost.setHeader("Content-type", "application/json");
-                Log.i(TAG, "cellTower: " + cellTower);
                 Log.i(TAG, "rootObject.toString(): " + rootObject.toString());
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 String response = httpclient.execute(httpost, responseHandler);
 
                 result = response;
+                JSONObject jsonResult = new JSONObject(result);
+                JSONObject location = jsonResult.getJSONObject("location");
+
+                mLocationModel.setAcc(jsonResult.getString("accuracy"));
+                mLocationModel.setLat(location.getString("lat"));
+                mLocationModel.setLng(location.getString("lng"));
+                String latlng = mLocationModel.getLat() +"%2C"+mLocationModel.getLng();
+
+                List<GalleryItem> items = new ArrayList<>();
+                String url = Uri.parse(GOOGLE_GEOCODING_URI)
+                        .buildUpon()
+                        .appendQueryParameter("key", GOOGLE_GEOCODING_API_KEY)
+                        .appendQueryParameter("latlng", latlng)
+                        .build().toString();
+                String jsonString = getUrlString(url);
+                Log.i(TAG, "Received JSON: " + jsonString);
+                JSONObject jsonBody = new JSONObject(jsonString);
+                parseItems(items, jsonBody);
+
+
             } catch (Exception e) {
                 final String err = e.getMessage();
                 runOnUiThread(new Runnable() {
@@ -442,12 +469,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
             if (result != null) {
                 try {
-                    JSONObject jsonResult = new JSONObject(result);
-                    JSONObject location = jsonResult.getJSONObject("location");
 
-                    mLocationModel.setAcc(jsonResult.getString("accuracy"));
-                    mLocationModel.setLat(location.getString("lat"));
-                    mLocationModel.setLng(location.getString("lng"));
 
                     setShared();
                     setTextViewFragment();
@@ -461,7 +483,58 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             }
         }
 
+        public byte[] getUrlBytes(String urlSpec) throws IOException {
+            URL url = new URL(urlSpec);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            try {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                InputStream in = connection.getInputStream();
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    throw new IOException(connection.getResponseMessage() +
+                            ": with " +
+                            urlSpec);
+                }
+                int bytesRead = 0;
+                byte[] buffer = new byte[1024];
+                while ((bytesRead = in.read(buffer)) > 0) {
+                    out.write(buffer, 0, bytesRead);
+                }
+                out.close();
+                return out.toByteArray();
+            } finally {
+                connection.disconnect();
+            }
+        }
+
+        public String getUrlString(String urlSpec) throws IOException {
+            return new String(getUrlBytes(urlSpec));
+        }
+
+
+        private void parseItems(List<GalleryItem> items, JSONObject jsonBody)
+                throws IOException, JSONException {
+
+            JSONObject photosJsonObject = jsonBody.getJSONObject("photos");
+            JSONArray photoJsonArray = photosJsonObject.getJSONArray("photo");
+
+            for (int i = 0; i < photoJsonArray.length(); i++) {
+                JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
+
+                GalleryItem item = new GalleryItem();
+                item.setId(photoJsonObject.getString("id"));
+                item.setCaption(photoJsonObject.getString("title"));
+
+                if (!photoJsonObject.has("url_s")) {
+                    continue;
+                }
+
+                item.setUrl(photoJsonObject.getString("url_s"));
+                items.add(item);
+            }
+        }
+
     }
+
     @Override
     public void onBackPressed() {
         assert drawer != null;

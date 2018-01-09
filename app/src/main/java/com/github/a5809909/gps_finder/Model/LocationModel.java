@@ -1,18 +1,36 @@
 package com.github.a5809909.gps_finder.Model;
 
 public class LocationModel {
-private String _id;
-private String dateAndTime;
-private String cellId;
-private String lac;
-private String mcc;
-private String mnc;
-private String lat;
-private String lng;
-private String acc;
-private String country;
-private String city;
-private String street;
+    private String _id;
+    private String dateAndTime;
+    private String cellId;
+    private String lac;
+    private String mcc;
+    private String mnc;
+    private String json_first;
+    private String lat;
+    private String lng;
+    private String acc;
+    private String country;
+    private String city;
+    private String street;
+    private String errors;
+
+    public String getJson_first() {
+        return json_first;
+    }
+
+    public void setJson_first(String json_first) {
+        this.json_first = json_first;
+    }
+
+    public String getErrors() {
+        return errors;
+    }
+
+    public void setErrors(String errors) {
+        this.errors = errors;
+    }
 
     public String get_id() {
         return _id;

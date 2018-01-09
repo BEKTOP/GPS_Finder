@@ -10,8 +10,12 @@ public class Constants {
     public interface NOTIFICATION_ID {
         public static int FOREGROUND_SERVICE = 101;
         public static int LOCATION_PERMISSION_CODE = 855;
-        public static final String API_KEY = "AIzaSyDNsRNkiJddjICdCY9fiFw3U6_nziORLC4";
-        public static final String  API_KEY_FETCHR = "23b3976fd2e717eaf8337db6c7656db3";
+        public static final String GOOGLE_GEOLOCATE_URI = "https://www.googleapis.com/geolocation/v1/geolocate?key=";
+        public static final String GOOGLE_GEOLOCATE_API_KEY = "AIzaSyDNsRNkiJddjICdCY9fiFw3U6_nziORLC4";
+        public static final String GOOGLE_GEOCODING_URI = "https://maps.googleapis.com/maps/api/geocode/json?";
+        public static final String GOOGLE_GEOCODING_API_KEY = "AIzaSyA_W1ByU1TkqSfL9_soCJtq1M_OrgrhFKk";
+        public static final String FETCHR_API_KEY = "23b3976fd2e717eaf8337db6c7656db3";
+        public static final String FETCHR_URI = "https://api.flickr.com/services/rest/";
 
     }
 }
