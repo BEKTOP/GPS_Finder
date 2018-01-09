@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     private void initNavigationView() {
-        drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawerLayout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             viewPager.setCurrentItem(4);
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawerLayout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

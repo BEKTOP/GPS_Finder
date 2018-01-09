@@ -65,7 +65,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap map) {
-        sPref = this.getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+       try{
+           sPref = this.getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+
         String savedLat = sPref.getString("lat", "");
         String savedLng = sPref.getString("lng", "");
         double lat = Double.parseDouble(savedLat);
@@ -79,6 +81,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         map.animateCamera(cameraUpdate);
         map.addMarker(new MarkerOptions().position(latLng).title("lat:" + savedLat + ", lng:" + savedLng));
         map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+    }catch (Exception pE){
+
+       }
     }
 
 
