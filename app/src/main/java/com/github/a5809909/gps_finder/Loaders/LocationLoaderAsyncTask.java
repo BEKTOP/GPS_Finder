@@ -1,10 +1,9 @@
-package com.github.a5809909.gps_finder.AsyncTask;
+package com.github.a5809909.gps_finder.Loaders;
 
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.github.a5809909.gps_finder.IAsyncTaskListener;
 import com.github.a5809909.gps_finder.Model.LocationModel;
 
 import org.apache.http.client.HttpClient;
@@ -27,14 +26,15 @@ import java.util.List;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOCODING_API_KEY;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOCODING_URI;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOLOCATE_API_KEY;
+import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOLOCATE_URI;
 
-public class HttpPostTask extends AsyncTask<LocationModel, Void, LocationModel> {
+public class LocationLoaderAsyncTask extends AsyncTask<LocationModel, Void, LocationModel> {
 
     private String TAG = "AsyncTask";
     LocationModel mLocationModel;
     IAsyncTaskListener mIAsyncTaskListener;
 
-    public HttpPostTask(IAsyncTaskListener pIAsyncTaskListener) {
+    public LocationLoaderAsyncTask(IAsyncTaskListener pIAsyncTaskListener) {
         mIAsyncTaskListener = pIAsyncTaskListener;
     }
 
@@ -42,7 +42,7 @@ public class HttpPostTask extends AsyncTask<LocationModel, Void, LocationModel> 
     protected LocationModel doInBackground(LocationModel... params) {
         mLocationModel = params[0];
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpost = new HttpPost("https://www.googleapis.com/geolocation/v1/geolocate?key=" + GOOGLE_GEOLOCATE_API_KEY);
+        HttpPost httpost = new HttpPost(GOOGLE_GEOLOCATE_URI + GOOGLE_GEOLOCATE_API_KEY);
         StringEntity se;
 
         try {
@@ -93,9 +93,13 @@ public class HttpPostTask extends AsyncTask<LocationModel, Void, LocationModel> 
             String jsonString = getUrlString(url);
             Log.i(TAG, "Received JSON: " + jsonString);
             JSONObject jsonBody = new JSONObject(jsonString);
-            JSONObject addressJsonObject = jsonBody.getJSONObject("results");
-            JSONArray photoJsonArray = addressJsonObject.getJSONArray("results");
-//            "formatted_address"
+            JSONArray addressJsonArray = jsonBody.getJSONArray("results");
+            JSONObject addressObject = addressJsonArray.getJSONObject(0);
+            addressObject.length();
+            String address = addressObject.getString("formatted_address");
+            mLocationModel.setAddress(address);
+
+
         } catch (Exception e) {
             final String err = e.getMessage();
             mLocationModel.setErrors(err);
@@ -117,8 +121,8 @@ public class HttpPostTask extends AsyncTask<LocationModel, Void, LocationModel> 
         s.append(mLocationModel.getAcc() + ", ");
         s.append(mLocationModel.getJson_first() + ", ");
         s.append(mLocationModel.getAddress() + ", ");
-        s.append(mLocationModel.getErrors() + ", ");
-        Log.i("111", "onPostExecute: " + s);
+        s.append(mLocationModel.getErrors() + ". ");
+        Log.i(TAG, "onPostExecute: " + s);
         mIAsyncTaskListener.finishedAsyncTask();
     }
 

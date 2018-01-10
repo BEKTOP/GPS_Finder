@@ -2,6 +2,7 @@ package com.github.a5809909.gps_finder.Activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -27,13 +28,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.a5809909.gps_finder.Adapter.ViewPagerAdapter;
-import com.github.a5809909.gps_finder.AsyncTask.HttpPostTask;
+import com.github.a5809909.gps_finder.Loaders.LocationLoaderAsyncTask;
 import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
 import com.github.a5809909.gps_finder.Fragment.LocationFragment;
 import com.github.a5809909.gps_finder.Fragment.MapFragment;
 import com.github.a5809909.gps_finder.Fragment.PhotoGalleryFragment;
 import com.github.a5809909.gps_finder.Fragment.WeatherFragment;
-import com.github.a5809909.gps_finder.IAsyncTaskListener;
+import com.github.a5809909.gps_finder.Loaders.IAsyncTaskListener;
 import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
 
@@ -89,9 +90,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             mLocationModel.setLat(sPref.getString("lat", ""));
             mLocationModel.setLng(sPref.getString("lng", ""));
             mLocationModel.setAcc(sPref.getString("accuracy", ""));
+            mLocationModel.setAddress(sPref.getString("address", ""));
 
         } catch (Exception e) {
-            Toast.makeText(this, "1 time", Toast.LENGTH_LONG).show();
+            //  Toast.makeText(this, "1 time", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -105,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         sPrefEditor.putString("lat", mLocationModel.getLat());
         sPrefEditor.putString("lng", mLocationModel.getLng());
         sPrefEditor.putString("accuracy", mLocationModel.getAcc());
+        sPrefEditor.putString("address", mLocationModel.getAddress());
         sPrefEditor.apply();
     }
 
@@ -198,6 +201,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             viewPager.setCurrentItem(3);
         } else if (id == R.id.nav_weather) {
             viewPager.setCurrentItem(4);
+        } else if (id == R.id.nav_settings) {
+            Intent intent = new Intent(this,SettingsActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawerLayout);
@@ -272,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 mLocationModel.setMcc(op.substring(0, 3));
                 mLocationModel.setMnc(op.substring(3));
 
-                new HttpPostTask(new IAsyncTaskListener() {
+                new LocationLoaderAsyncTask(new IAsyncTaskListener() {
 
                     @Override
                     public void finishedAsyncTask() {
@@ -280,11 +286,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                         setTextViewFragment();
                         setToolbar();
                         if (pd != null) {
-                try {
-                    pd.dismiss();
-                } catch (Exception e) {
-                }}
-                        Toast.makeText(instance, "cid:" + mLocationModel.getCellId(), Toast.LENGTH_SHORT).show();
+                            try {
+                                pd.dismiss();
+                            } catch (Exception e) {
+                            }
+                        }
+                        //   Toast.makeText(instance, "cid:" + mLocationModel.getCellId(), Toast.LENGTH_SHORT).show();
 
                     }
                 }).execute(mLocationModel);
@@ -294,36 +301,24 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 pd.setCancelable(false);
                 pd.setIndeterminate(true);
                 pd.show();
-
-
-            StringBuilder s = new StringBuilder();
-            s.append(mLocationModel.getDateAndTime() + ", ");
-//        s.append(mLocationModel.getCellId() + ", ");
-//        s.append(mLocationModel.getLac() + ", ");
-//        s.append(mLocationModel.getMcc() + ", ");
-//        s.append(mLocationModel.getMnc() + ", ");
-//        s.append(mLocationModel.getLat() + ", ");
-//        s.append(mLocationModel.getLng() + ", ");
-//        s.append(mLocationModel.getAcc() + ", ");
-//        s.append(mLocationModel.getJson_first() + ", ");
-            s.append(mLocationModel.getAddress() + ", ");
-            s.append(mLocationModel.getErrors() + ", ");
-         //   Toast.makeText(instance, s,Toast.LENGTH_LONG).show();
-
-
-         //   Toast.makeText(this, "cid:" + mLocationModel.getCellId(), Toast.LENGTH_SHORT).show();
-        }            } else {
+                if (mLocationModel.getErrors() != null) {
+                    Toast.makeText(instance, mLocationModel.getErrors(), Toast.LENGTH_LONG).show();
+                }
+            }
+        } else {
             Toast.makeText(instance, "No valid GSM network found",
                     Toast.LENGTH_LONG).show();
         }
     }
 
-
     private void setTextViewFragment() {
 
         final TextView textViewCellID, textViewDateAndTime, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude,
-                textViewAccuracy, textViewAddress, textViewCity, textViewStreet;
+                textViewAccuracy, textViewAddress;
         try {
+//            LocationFragment fragment = new LocationFragment();
+//
+//            fragment.setFragmentViews();
 
             textViewDateAndTime = viewPagerRootView.findViewById(R.id.text_date_and_time);
             textViewCellID = viewPagerRootView.findViewById(R.id.text_cell_id);
@@ -333,9 +328,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             textViewLatitude = viewPagerRootView.findViewById(R.id.text_latitude);
             textViewLongitude = viewPagerRootView.findViewById(R.id.text_longitude);
             textViewAccuracy = viewPagerRootView.findViewById(R.id.text_accuracy);
-            textViewAddress = viewPagerRootView.findViewById(R.id.text_country);
-//            textViewCity = viewPagerRootView.findViewById(R.id.text_city);
-//            textViewStreet = viewPagerRootView.findViewById(R.id.text_street);
+            textViewAddress = viewPagerRootView.findViewById(R.id.text_address);
 
             textViewDateAndTime.setText(mLocationModel.getDateAndTime());
             textViewCellID.setText(mLocationModel.getCellId());

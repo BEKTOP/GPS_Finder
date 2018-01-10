@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.github.a5809909.gps_finder.ImageLoader.FlickrFetchr;
+import com.github.a5809909.gps_finder.Loaders.FlickrFetchr;
 import com.github.a5809909.gps_finder.Model.GalleryItem;
 import com.github.a5809909.gps_finder.ImageLoader.ThumbnailDownloader;
 import com.github.a5809909.gps_finder.R;

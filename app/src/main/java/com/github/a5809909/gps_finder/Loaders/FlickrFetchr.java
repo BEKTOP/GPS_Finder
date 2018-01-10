@@ -1,4 +1,4 @@
-package com.github.a5809909.gps_finder.ImageLoader;
+package com.github.a5809909.gps_finder.Loaders;
 
 import android.content.SharedPreferences;
 import android.net.Uri;

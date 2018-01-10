@@ -8,7 +8,7 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
 
-import com.github.a5809909.gps_finder.ImageLoader.FlickrFetchr;
+import com.github.a5809909.gps_finder.Loaders.FlickrFetchr;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;

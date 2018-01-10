@@ -1,42 +1,24 @@
 package com.github.a5809909.gps_finder.Service;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.IBinder;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.github.a5809909.gps_finder.Activity.MainActivity;
 import com.github.a5809909.gps_finder.R;
 import com.github.a5809909.gps_finder.Utilities.Constants;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-
 public class LogService extends Service {
+
     private static final String LOG_TAG = "LogService";
     private boolean isRun;
 
@@ -89,10 +71,8 @@ public class LogService extends Service {
 
         }
 
-
-
-            return START_STICKY;
-        }
+        return START_STICKY;
+    }
 
     public void getLocationClicked() {
 
@@ -116,7 +96,6 @@ public class LogService extends Service {
             }
         }
     }
-
 
     @Override
     public void onDestroy() {

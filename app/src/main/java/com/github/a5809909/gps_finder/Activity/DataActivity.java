@@ -8,7 +8,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.github.a5809909.gps_finder.Model.PhoneState;
 import com.github.a5809909.gps_finder.R;
-import com.github.a5809909.gps_finder.MySQL.DatabaseHelper;
+import com.github.a5809909.gps_finder.Sql.DatabaseHelper;
 
 import java.util.List;
 

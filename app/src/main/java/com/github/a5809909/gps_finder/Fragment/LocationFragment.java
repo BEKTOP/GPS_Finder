@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,14 @@ import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
 
 public class LocationFragment extends Fragment {
-LocationModel mLocationModel;
+
+    LocationModel mLocationModel;
     SharedPreferences sPref;
     TextView textViewDateAndTime, textViewCellID, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude, textViewAccuracy,
-            textViewCountry, textViewCity, textViewStreet;
+            textViewAddress;
 
-    public LocationFragment() {}
+    public LocationFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,13 +38,17 @@ LocationModel mLocationModel;
         return view;
     }
 
-    public void initFragment(View pView) {
+
+    private void initFragment(View pView) {
+        Log.i("222", "initFragment: ");
         getShared();
         initFragmentViews(pView);
         setFragmentViews();
     }
 
-    private void setFragmentViews() {
+    public void setFragmentViews() {
+
+
         textViewDateAndTime.setText(mLocationModel.getDateAndTime());
         textViewCellID.setText(mLocationModel.getCellId());
         textViewLAC.setText(mLocationModel.getLac());
@@ -50,10 +57,12 @@ LocationModel mLocationModel;
         textViewLatitude.setText(mLocationModel.getLat());
         textViewLongitude.setText(mLocationModel.getLng());
         textViewAccuracy.setText(mLocationModel.getAcc());
-
+        textViewAddress.setText(mLocationModel.getAddress());
+        Log.i("222", "setFragmentViews: "+mLocationModel.getDateAndTime());
     }
 
     private void initFragmentViews(View pView) {
+        Log.i("222", "initFragmentViews: ");
         textViewDateAndTime = pView.findViewById(R.id.text_date_and_time);
         textViewCellID = pView.findViewById(R.id.text_cell_id);
         textViewLAC = pView.findViewById(R.id.text_lac);
@@ -62,9 +71,8 @@ LocationModel mLocationModel;
         textViewLatitude = pView.findViewById(R.id.text_latitude);
         textViewLongitude = pView.findViewById(R.id.text_longitude);
         textViewAccuracy = pView.findViewById(R.id.text_accuracy);
-        textViewCountry = pView.findViewById(R.id.text_country);
-        textViewCity = pView.findViewById(R.id.text_city);
-        textViewStreet = pView.findViewById(R.id.text_street);
+        textViewAddress = pView.findViewById(R.id.text_address);
+
     }
 
     private void getShared() {
@@ -79,7 +87,8 @@ LocationModel mLocationModel;
             mLocationModel.setLat(sPref.getString("lat", ""));
             mLocationModel.setLng(sPref.getString("lng", ""));
             mLocationModel.setAcc(sPref.getString("accuracy", ""));
-
+            mLocationModel.setAddress(sPref.getString("address", ""));
+            Log.i("222", "getShared: "+sPref.getString("dayAndTime", ""));
         } catch (Exception e) {
 
         }

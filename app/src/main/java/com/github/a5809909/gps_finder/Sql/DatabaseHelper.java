@@ -1,4 +1,4 @@
-package com.github.a5809909.gps_finder.MySQL;
+package com.github.a5809909.gps_finder.Sql;
 
 import android.content.ContentValues;
 import android.content.Context;
