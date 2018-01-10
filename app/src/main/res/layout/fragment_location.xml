@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.github.a5809909.gps_finder.Fragment.LocationFragment">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.github.a5809909.gps_finder.Fragment.LocationFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:text="Date / Time: "
             android:textAllCaps="true"
             android:textColor="@color/colorPrimary"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/text_date_and_time"
@@ -28,7 +28,7 @@
             android:text="Date / Time"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimaryText"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
 
     </LinearLayout>
@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
 
-        android:background="@color/colorPrimary" />
+        android:background="@color/colorPrimary"/>
 
 
     <LinearLayout
@@ -59,42 +59,42 @@
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Latitude: " />
+                android:text="Latitude: "/>
 
             <TextView
                 android:id="@+id/text_view_longitude"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Longitude: " />
+                android:text="Longitude: "/>
 
             <TextView
                 android:id="@+id/text_view_accuracy"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Accuracy: " />
+                android:text="Accuracy: "/>
 
             <TextView
                 android:id="@+id/text_view_country"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Country: " />
+                android:text="Country: "/>
 
             <TextView
                 android:id="@+id/text_view_city"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="City: " />
+                android:text="City: "/>
 
             <TextView
                 android:id="@+id/text_view_street"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Street: " />
+                android:text="Street: "/>
 
         </LinearLayout>
 
@@ -110,42 +110,42 @@
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Latitude" />
+                android:text="Latitude"/>
 
             <TextView
                 android:id="@+id/text_longitude"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Longitude" />
+                android:text="Longitude"/>
 
             <TextView
                 android:id="@+id/text_accuracy"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Accuracy" />
+                android:text="Accuracy"/>
 
             <TextView
                 android:id="@+id/text_country"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Country" />
+                android:text="Country"/>
 
             <TextView
                 android:id="@+id/text_city"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="City" />
+                android:text="City"/>
 
             <TextView
                 android:id="@+id/text_street"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Street" />
+                android:text="Street"/>
 
         </LinearLayout>
 
@@ -162,21 +162,21 @@
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cell ID: " />
+                android:text="Cell ID: "/>
 
             <TextView
                 android:id="@+id/text_view_lac"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LAC: " />
+                android:text="LAC: "/>
 
             <TextView
                 android:id="@+id/text_view_mcc"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MCC: " />
+                android:text="MCC: "/>
 
             <TextView
                 android:id="@+id/text_view_mnc"
@@ -184,7 +184,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:text="MNC: " />
+                android:text="MNC: "/>
 
         </LinearLayout>
 
@@ -199,28 +199,28 @@
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cell ID" />
+                android:text="Cell ID"/>
 
             <TextView
                 android:id="@+id/text_lac"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LAC" />
+                android:text="LAC"/>
 
             <TextView
                 android:id="@+id/text_mcc"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MCC" />
+                android:text="MCC"/>
 
             <TextView
                 android:id="@+id/text_mnc"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MNC" />
+                android:text="MNC"/>
 
         </LinearLayout>
 
@@ -263,7 +263,7 @@
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save in database" />
+            android:text="Save in database"/>
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/logServiceOn"
@@ -278,7 +278,7 @@
             android:textOff="OFF"
             android:textOn="ON"
             app:showText="true"
-            app:trackTint="@color/colorPrimary" />
+            app:trackTint="@color/colorPrimary"/>
 
     </RelativeLayout>
 

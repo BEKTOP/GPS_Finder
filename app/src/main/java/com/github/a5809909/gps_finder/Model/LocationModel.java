@@ -11,26 +11,8 @@ public class LocationModel {
     private String lat;
     private String lng;
     private String acc;
-    private String country;
-    private String city;
-    private String street;
+    private String address;
     private String errors;
-
-    public String getJson_first() {
-        return json_first;
-    }
-
-    public void setJson_first(String json_first) {
-        this.json_first = json_first;
-    }
-
-    public String getErrors() {
-        return errors;
-    }
-
-    public void setErrors(String errors) {
-        this.errors = errors;
-    }
 
     public String get_id() {
         return _id;
@@ -104,27 +86,28 @@ public class LocationModel {
         acc = pAcc;
     }
 
-    public String getCountry() {
-        return country;
+    public String getAddress() {
+        return address;
     }
 
-    public void setCountry(String pCountry) {
-        country = pCountry;
+    public void setAddress(String pAddress) {
+        address = pAddress;
     }
 
-    public String getCity() {
-        return city;
+    public String getJson_first() {
+        return json_first;
     }
 
-    public void setCity(String pCity) {
-        city = pCity;
+    public void setJson_first(String json_first) {
+        this.json_first = json_first;
     }
 
-    public String getStreet() {
-        return street;
+    public String getErrors() {
+        return errors;
     }
 
-    public void setStreet(String pStreet) {
-        street = pStreet;
+    public void setErrors(String errors) {
+        this.errors = errors;
     }
+
 }

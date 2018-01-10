@@ -16,7 +16,7 @@ public class DataActivity extends Activity {
     private Cursor mCursor;
     private DatabaseHelper databaseHelper;
     private SimpleCursorAdapter mCursorAd;
-    GridView gv;
+    GridView gridView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +25,7 @@ public class DataActivity extends Activity {
         List<PhoneState> phoneStates = databaseHelper.getAllPhoneStates();
 
         databaseHelper.close();
-        gv=findViewById(R.id.gridView1);
+        gridView =findViewById(R.id.gridView1);
         mCursor = databaseHelper.getAllItems();
 
         String[] from = new String[] { databaseHelper.COLUMN_TIME, databaseHelper.COLUMN_JSON_STRING, databaseHelper.COLUMN_LAT,
@@ -34,7 +34,7 @@ public class DataActivity extends Activity {
 
         mCursorAd = new SimpleCursorAdapter(this, R.layout.item_grid_view, mCursor, from, to, 0);
 
-        gv.setAdapter(mCursorAd);
+        gridView.setAdapter(mCursorAd);
 
     }
 

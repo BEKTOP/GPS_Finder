@@ -1,4 +1,4 @@
-package com.github.a5809909.gps_finder.ImagrLoader;
+package com.github.a5809909.gps_finder.ImageLoader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
+
+import com.github.a5809909.gps_finder.ImageLoader.FlickrFetchr;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;

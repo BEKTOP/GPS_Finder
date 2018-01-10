@@ -1,8 +1,10 @@
-package com.github.a5809909.gps_finder.ImagrLoader;
+package com.github.a5809909.gps_finder.ImageLoader;
 
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
+
+import com.github.a5809909.gps_finder.Model.GalleryItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;

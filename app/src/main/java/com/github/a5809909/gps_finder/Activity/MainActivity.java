@@ -2,11 +2,8 @@ package com.github.a5809909.gps_finder.Activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -26,62 +23,38 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.a5809909.gps_finder.Adapter.ViewPagerAdapter;
+import com.github.a5809909.gps_finder.AsyncTask.HttpPostTask;
 import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
 import com.github.a5809909.gps_finder.Fragment.LocationFragment;
 import com.github.a5809909.gps_finder.Fragment.MapFragment;
+import com.github.a5809909.gps_finder.Fragment.PhotoGalleryFragment;
 import com.github.a5809909.gps_finder.Fragment.WeatherFragment;
-import com.github.a5809909.gps_finder.ImagrLoader.GalleryItem;
-import com.github.a5809909.gps_finder.ImagrLoader.PhotoGalleryFragment;
+import com.github.a5809909.gps_finder.IAsyncTaskListener;
 import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
-import com.github.a5809909.gps_finder.Service.LogService;
-import com.github.a5809909.gps_finder.Utilities.Constants;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.TimeZone;
 
-import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.FETCHR_API_KEY;
-import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOCODING_URI;
-import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOLOCATE_API_KEY;
-import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOLOCATE_URI;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.LOCATION_PERMISSION_CODE;
-import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOCODING_API_KEY;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+
     SimpleDateFormat formatter;
     LocationModel mLocationModel;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private DrawerLayout drawer;
+    ProgressDialog pd;
 
     SharedPreferences sPref;
     SharedPreferences.Editor sPrefEditor;
     //    private DatabaseHelper databaseHelper;
-    private TextView textviewLat, textviewLng, textviewAcc;
     private MainActivity instance;
     private static final String TAG = "Main";
     private DrawerLayout mDrawerLayout;
@@ -103,20 +76,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
         viewPager = findViewById(R.id.view_pager);
         viewPagerRootView = viewPager.getRootView();
-
-//        SwitchCompat switchCompat = viewPagerRootView.findViewById(R.id.logServiceOn);
-//
-//        if (switchCompat != null) {
-//            switchCompat.setOnCheckedChangeListener(this);
-//        }
     }
-
-
-//    @Override
-//    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//        Toast.makeText(this, "Отслеживание переключения: " + (isChecked ? "on" : "off"),
-//                Toast.LENGTH_SHORT).show();
-//    }
 
     private void getShared() {
         try {
@@ -179,8 +139,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     private void setToolbar() {
-        getSupportActionBar().setTitle("Lat: " + mLocationModel.getLat().substring(0, 7) + ", Lng: " + mLocationModel.getLng().substring(0, 7));
-        toolbar.setSubtitle("Acc: " + mLocationModel.getAcc());
+        try {
+            getSupportActionBar().setTitle("Lat: " + mLocationModel.getLat().substring(0, 7) + ", Lng: " + mLocationModel.getLng().substring(0, 7));
+            toolbar.setSubtitle("Acc: " + mLocationModel.getAcc());
+        } catch (Exception e) {
+
+        }
+
     }
 
     private void setupTabIcons() {
@@ -218,40 +183,26 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.show_point) {
+        if (id == R.id.nav_show_point) {
             viewPager.setCurrentItem(0);
-        } else if (id == R.id.database) {
+        } else if (id == R.id.nav_database) {
             viewPager.setCurrentItem(1);
-        } else if (id == R.id.show_map) {
+        } else if (id == R.id.nav_show_map) {
             viewPager.setCurrentItem(2);
-        } else if (id == R.id.images) {
+        } else if (id == R.id.nav_images) {
             viewPager.setCurrentItem(3);
-        } else if (id == R.id.weather) {
+        } else if (id == R.id.nav_weather) {
             viewPager.setCurrentItem(4);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawerLayout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public void onSwitchClicked(View view) {
-        boolean on = ((Switch) view).isChecked();
-        if (on) {
-            Intent startIntent = new Intent(MainActivity.this, LogService.class);
-            startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
-            startService(startIntent);
-        } else {
-            Intent stopIntent = new Intent(MainActivity.this, LogService.class);
-            stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
-            startService(stopIntent);
-        }
     }
 
     @Override
@@ -320,22 +271,58 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 mLocationModel.setLac("" + gsmLoc.getLac());
                 mLocationModel.setMcc(op.substring(0, 3));
                 mLocationModel.setMnc(op.substring(3));
-                //              Toast.makeText(this, "cid:" + mLocationModel.getCellId(), Toast.LENGTH_SHORT).show();
 
-                setTextViewFragment();
+                new HttpPostTask(new IAsyncTaskListener() {
 
-                new HttpPostTask().execute();
-            } else {
-                Toast.makeText(instance, "No valid GSM network found",
-                        Toast.LENGTH_LONG).show();
-            }
+                    @Override
+                    public void finishedAsyncTask() {
+                        setShared();
+                        setTextViewFragment();
+                        setToolbar();
+                        if (pd != null) {
+                try {
+                    pd.dismiss();
+                } catch (Exception e) {
+                }}
+                        Toast.makeText(instance, "cid:" + mLocationModel.getCellId(), Toast.LENGTH_SHORT).show();
+
+                    }
+                }).execute(mLocationModel);
+                pd = new ProgressDialog(instance);
+                pd.setTitle("Getting Location");
+                pd.setMessage("Please Wait...");
+                pd.setCancelable(false);
+                pd.setIndeterminate(true);
+                pd.show();
+
+
+            StringBuilder s = new StringBuilder();
+            s.append(mLocationModel.getDateAndTime() + ", ");
+//        s.append(mLocationModel.getCellId() + ", ");
+//        s.append(mLocationModel.getLac() + ", ");
+//        s.append(mLocationModel.getMcc() + ", ");
+//        s.append(mLocationModel.getMnc() + ", ");
+//        s.append(mLocationModel.getLat() + ", ");
+//        s.append(mLocationModel.getLng() + ", ");
+//        s.append(mLocationModel.getAcc() + ", ");
+//        s.append(mLocationModel.getJson_first() + ", ");
+            s.append(mLocationModel.getAddress() + ", ");
+            s.append(mLocationModel.getErrors() + ", ");
+         //   Toast.makeText(instance, s,Toast.LENGTH_LONG).show();
+
+
+         //   Toast.makeText(this, "cid:" + mLocationModel.getCellId(), Toast.LENGTH_SHORT).show();
+        }            } else {
+            Toast.makeText(instance, "No valid GSM network found",
+                    Toast.LENGTH_LONG).show();
         }
     }
+
 
     private void setTextViewFragment() {
 
         final TextView textViewCellID, textViewDateAndTime, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude,
-                textViewAccuracy, textViewCountry, textViewCity, textViewStreet;
+                textViewAccuracy, textViewAddress, textViewCity, textViewStreet;
         try {
 
             textViewDateAndTime = viewPagerRootView.findViewById(R.id.text_date_and_time);
@@ -346,9 +333,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             textViewLatitude = viewPagerRootView.findViewById(R.id.text_latitude);
             textViewLongitude = viewPagerRootView.findViewById(R.id.text_longitude);
             textViewAccuracy = viewPagerRootView.findViewById(R.id.text_accuracy);
-            textViewCountry = viewPagerRootView.findViewById(R.id.text_country);
-            textViewCity = viewPagerRootView.findViewById(R.id.text_city);
-            textViewStreet = viewPagerRootView.findViewById(R.id.text_street);
+            textViewAddress = viewPagerRootView.findViewById(R.id.text_country);
+//            textViewCity = viewPagerRootView.findViewById(R.id.text_city);
+//            textViewStreet = viewPagerRootView.findViewById(R.id.text_street);
 
             textViewDateAndTime.setText(mLocationModel.getDateAndTime());
             textViewCellID.setText(mLocationModel.getCellId());
@@ -358,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             textViewLatitude.setText(mLocationModel.getLat());
             textViewLongitude.setText(mLocationModel.getLng());
             textViewAccuracy.setText(mLocationModel.getAcc());
+            textViewAddress.setText(mLocationModel.getAddress());
         } catch (Exception e) {
 
         }
@@ -372,171 +360,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                     activity.checkSelfPermission("android.permission.READ_PHONE_STATE") == PackageManager.PERMISSION_GRANTED;
         }
         return true;
-    }
-
-
-    private class HttpPostTask extends AsyncTask<String, Void, String> {
-
-        ProgressDialog pd;
-
-        @Override
-        protected void onPreExecute() {
-            pd = new ProgressDialog(instance);
-            pd.setTitle("Getting Location");
-            pd.setMessage("Please Wait...");
-            pd.setCancelable(false);
-            pd.setIndeterminate(true);
-            pd.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String result = null;
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httpost = new HttpPost(GOOGLE_GEOLOCATE_URI + GOOGLE_GEOLOCATE_API_KEY);
-            StringEntity se;
-            try {
-                JSONObject cellTower = new JSONObject();
-                cellTower.put("cellId", mLocationModel.getCellId());
-                cellTower.put("locationAreaCode", mLocationModel.getLac());
-                cellTower.put("mobileCountryCode", mLocationModel.getMcc());
-                cellTower.put("mobileNetworkCode", mLocationModel.getMnc());
-
-                Log.i(TAG, "cellId: " + mLocationModel.getCellId() +
-                        ", locationAreaCode: " + mLocationModel.getLac() +
-                        ", mobileCountryCode: " + mLocationModel.getMcc() +
-                        ", mobileNetworkCode: " + mLocationModel.getMnc());
-                JSONArray cellTowers = new JSONArray();
-                cellTowers.put(cellTower);
-
-                JSONObject rootObject = new JSONObject();
-                rootObject.put("cellTowers", cellTowers);
-
-                se = new StringEntity(rootObject.toString());
-                se.setContentType("application/json");
-                mLocationModel.setJson_first(rootObject.toString());
-                httpost.setEntity(se);
-                httpost.setHeader("Accept", "application/json");
-                httpost.setHeader("Content-type", "application/json");
-                Log.i(TAG, "rootObject.toString(): " + rootObject.toString());
-                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                String response = httpclient.execute(httpost, responseHandler);
-
-                result = response;
-                JSONObject jsonResult = new JSONObject(result);
-                JSONObject location = jsonResult.getJSONObject("location");
-
-                mLocationModel.setAcc(jsonResult.getString("accuracy"));
-                mLocationModel.setLat(location.getString("lat"));
-                mLocationModel.setLng(location.getString("lng"));
-                String latlng = mLocationModel.getLat() + ","+mLocationModel.getLng();
-
-                List<GalleryItem> items = new ArrayList<>();
-                String url = Uri.parse(GOOGLE_GEOCODING_URI)
-                        .buildUpon()
-                        .appendQueryParameter("key", GOOGLE_GEOCODING_API_KEY)
-                        .appendQueryParameter("latlng", latlng)
-                        .appendQueryParameter("language", "ru")
-                      //  .appendQueryParameter("result_type", "country|street_address|postal_code")
-
-                        .build().toString();
-
-                String jsonString = getUrlString(url);
-                Log.i(TAG, "Received JSON: " + jsonString);
-                JSONObject jsonBody = new JSONObject(jsonString);
-                JSONObject addressJsonObject = jsonBody.getJSONObject("results");
-                JSONArray photoJsonArray = addressJsonObject.getJSONArray("formatted_address");
-            } catch (Exception e) {
-                final String err = e.getMessage();
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Toast.makeText(instance, "Exception requesting location: " + err, Toast.LENGTH_LONG).show();
-                    }
-
-                });
-                e.printStackTrace();
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (pd != null) {
-                try {
-                    pd.dismiss();
-                } catch (Exception e) {
-                }
-            }
-
-            if (result != null) {
-                try {
-
-
-                    setShared();
-                    setTextViewFragment();
-                    setToolbar();
-                    Toast.makeText(MainActivity.this, "lat:" + mLocationModel.getLat() + ", lng:" + mLocationModel.getLng() + ", acc:" + mLocationModel.getAcc(), Toast.LENGTH_SHORT).show();
-
-                } catch (Exception e) {
-                    Toast.makeText(instance, "Exception parsing response: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        public byte[] getUrlBytes(String urlSpec) throws IOException {
-            URL url = new URL(urlSpec);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            try {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                InputStream in = connection.getInputStream();
-                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    throw new IOException(connection.getResponseMessage() +
-                            ": with " +
-                            urlSpec);
-                }
-                int bytesRead = 0;
-                byte[] buffer = new byte[1024];
-                while ((bytesRead = in.read(buffer)) > 0) {
-                    out.write(buffer, 0, bytesRead);
-                }
-                out.close();
-                return out.toByteArray();
-            } finally {
-                connection.disconnect();
-            }
-        }
-
-        public String getUrlString(String urlSpec) throws IOException {
-            return new String(getUrlBytes(urlSpec));
-        }
-
-
-        private void parseItems(List<GalleryItem> items, JSONObject jsonBody)
-                throws IOException, JSONException {
-
-            JSONObject photosJsonObject = jsonBody.getJSONObject("photos");
-            JSONArray photoJsonArray = photosJsonObject.getJSONArray("photo");
-
-            for (int i = 0; i < photoJsonArray.length(); i++) {
-                JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
-
-                GalleryItem item = new GalleryItem();
-                item.setId(photoJsonObject.getString("id"));
-                item.setCaption(photoJsonObject.getString("title"));
-
-                if (!photoJsonObject.has("url_s")) {
-                    continue;
-                }
-
-                item.setUrl(photoJsonObject.getString("url_s"));
-                items.add(item);
-            }
-        }
-
     }
 
     @Override

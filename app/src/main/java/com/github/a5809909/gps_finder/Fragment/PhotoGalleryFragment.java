@@ -1,4 +1,4 @@
-package com.github.a5809909.gps_finder.ImagrLoader;
+package com.github.a5809909.gps_finder.Fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,6 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.github.a5809909.gps_finder.ImageLoader.FlickrFetchr;
+import com.github.a5809909.gps_finder.Model.GalleryItem;
+import com.github.a5809909.gps_finder.ImageLoader.ThumbnailDownloader;
 import com.github.a5809909.gps_finder.R;
 
 import java.util.ArrayList;

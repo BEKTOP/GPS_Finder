@@ -1,4 +1,4 @@
-package com.github.a5809909.gps_finder.ImagrLoader;
+package com.github.a5809909.gps_finder.Model;
 
 public class GalleryItem {
     private String mCaption;
