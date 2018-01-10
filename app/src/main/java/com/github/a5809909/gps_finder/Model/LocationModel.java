@@ -1,7 +1,7 @@
 package com.github.a5809909.gps_finder.Model;
 
 public class LocationModel {
-    private String _id;
+    private int _id;
     private String dateAndTime;
     private String cellId;
     private String lac;
@@ -14,11 +14,11 @@ public class LocationModel {
     private String address;
     private String errors;
 
-    public String get_id() {
+    public int get_id() {
         return _id;
     }
 
-    public void set_id(String p_id) {
+    public void set_id(int p_id) {
         _id = p_id;
     }
 

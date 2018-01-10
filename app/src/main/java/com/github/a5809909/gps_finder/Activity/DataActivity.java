@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
 
-import com.github.a5809909.gps_finder.Model.PhoneState;
+import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
 import com.github.a5809909.gps_finder.Sql.DatabaseHelper;
 
@@ -22,13 +22,13 @@ public class DataActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
         databaseHelper = new DatabaseHelper(this);
-        List<PhoneState> phoneStates = databaseHelper.getAllPhoneStates();
+        List<LocationModel> locationModelList = databaseHelper.getAllLocationModels();
 
         databaseHelper.close();
         gridView =findViewById(R.id.gridView1);
         mCursor = databaseHelper.getAllItems();
 
-        String[] from = new String[] { databaseHelper.COLUMN_TIME, databaseHelper.COLUMN_JSON_STRING, databaseHelper.COLUMN_LAT,
+        String[] from = new String[] { databaseHelper.COLUMN_DAY_AND_TIME, databaseHelper.COLUMN_JSON_STRING, databaseHelper.COLUMN_LAT,
                 databaseHelper.COLUMN_LNG, databaseHelper.COLUMN_ACCURACY};
         int[] to = new int[] { R.id.tv_time,R.id.tv_json_string, R.id.tv_lac,R.id.tv_lng,R.id.tv_accuracy};
 

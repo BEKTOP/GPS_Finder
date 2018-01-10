@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 GsmCellLocation gsmLoc = (GsmCellLocation) loc;
                 String op = tel.getNetworkOperator();
 
-                formatter = new SimpleDateFormat("dd/MM/yyyy  HH:mm:ss");
+                formatter = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
                 formatter.setTimeZone(TimeZone.getTimeZone("Europe/Minsk"));
 
                 mLocationModel.setDateAndTime(formatter.format(System.currentTimeMillis()));
@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 mLocationModel.setMcc(op.substring(0, 3));
                 mLocationModel.setMnc(op.substring(3));
 
-                new LocationLoaderAsyncTask(new IAsyncTaskListener() {
+                new LocationLoaderAsyncTask(instance, new IAsyncTaskListener() {
 
                     @Override
                     public void finishedAsyncTask() {
