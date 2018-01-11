@@ -31,7 +31,6 @@ public class DatabaseFragment2 extends Fragment {
         DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
 
         List<LocationModel> locationModelList = new ArrayList<>();
-        locationModelList = databaseHelper.getAllLocationModels();
         String[] from = new String[]{databaseHelper.COLUMN_DAY_AND_TIME, databaseHelper.COLUMN_LAT, databaseHelper.COLUMN_LNG,
                 databaseHelper.COLUMN_ACCURACY, databaseHelper.COLUMN_ADDRESS};
         int[] to = new int[]{R.id.tv_date_and_time, R.id.tv_lat, R.id.tv_lng, R.id.tv_acc, R.id.tv_address};

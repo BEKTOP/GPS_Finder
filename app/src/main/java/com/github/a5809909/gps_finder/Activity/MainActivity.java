@@ -1,6 +1,7 @@
 package com.github.a5809909.gps_finder.Activity;
 
 import android.app.Activity;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -136,16 +140,16 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             getSupportActionBar().setTitle(R.string.app_name);
             toolbar.setSubtitle("");
         } else {
-
+            String accu = mLocationModel.getAcc();
             getSupportActionBar().setTitle("Lat: " + mLocationModel.getLat().substring(0, 7) + ", Lng: " + mLocationModel.getLng().substring(0, 7));
-            toolbar.setSubtitle("Acc: " + mLocationModel.getAcc());
+            toolbar.setSubtitle("Acc: " + mLocationModel.getAcc().substring(0, mLocationModel.getAcc().lastIndexOf('.')) + ", Date:" + mLocationModel.getDateAndTime());
         }
     }
 
     private void setToolbar() {
         try {
             getSupportActionBar().setTitle("Lat: " + mLocationModel.getLat().substring(0, 7) + ", Lng: " + mLocationModel.getLng().substring(0, 7));
-            toolbar.setSubtitle("Acc: " + mLocationModel.getAcc());
+            toolbar.setSubtitle("Acc: " + mLocationModel.getAcc().substring(0, mLocationModel.getAcc().lastIndexOf('.')) + ", Date:" + mLocationModel.getDateAndTime());
         } catch (Exception e) {
 
         }
@@ -167,13 +171,37 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new LocationFragment(), "LOCATION");
         adapter.addFrag(new DatabaseFragment(), "DATABASE");
         adapter.addFrag(new MapFragment(), "MAP");
         adapter.addFrag(new PhotoGalleryFragment(), "IMAGES");
         adapter.addFrag(new WeatherFragment(), "WEATHER");
         viewPager.setAdapter(adapter);
+
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+                                              @Override
+                                              public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                                              }
+
+                                              @Override
+                                              public void onPageScrollStateChanged(int state) {
+
+                                              }
+
+                                              @Override
+                                              public void onPageSelected(int position) {
+                                                  Fragment fragment = adapter.getItem(position);
+                                                  if (fragment instanceof DatabaseFragment) {
+                                                      ((DatabaseFragment) fragment).onResume();
+                                                  }
+
+                                              }
+                                          }
+        );
+
     }
 
     private void initNavigationView() {
@@ -203,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         } else if (id == R.id.nav_weather) {
             viewPager.setCurrentItem(4);
         } else if (id == R.id.nav_settings) {
-            Intent intent = new Intent(this,SettingsActivity.class);
+            Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
         }
 
@@ -316,33 +344,31 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
         final TextView textViewCellID, textViewDateAndTime, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude,
                 textViewAccuracy, textViewAddress;
-        try {
-//            LocationFragment fragment = new LocationFragment();
+
+       Fragment fragment1 = ((ViewPagerAdapter) viewPager.getAdapter()).getItem(0);
+fragment1.onDestroy();
+
+
+//            textViewDateAndTime = viewPagerRootView.findViewById(R.id.text_date_and_time);
+//            textViewCellID = viewPagerRootView.findViewById(R.id.text_cell_id);
+//            textViewLAC = viewPagerRootView.findViewById(R.id.text_lac);
+//            textViewMNC = viewPagerRootView.findViewById(R.id.text_mnc);
+//            textViewMCC = viewPagerRootView.findViewById(R.id.text_mcc);
+//            textViewLatitude = viewPagerRootView.findViewById(R.id.text_latitude);
+//            textViewLongitude = viewPagerRootView.findViewById(R.id.text_longitude);
+//            textViewAccuracy = viewPagerRootView.findViewById(R.id.text_accuracy);
+//            textViewAddress = viewPagerRootView.findViewById(R.id.text_address);
 //
-//            fragment.setFragmentViews();
+//            textViewDateAndTime.setText(mLocationModel.getDateAndTime());
+//            textViewCellID.setText(mLocationModel.getCellId());
+//            textViewLAC.setText(mLocationModel.getLac());
+//            textViewMCC.setText(mLocationModel.getMcc());
+//            textViewMNC.setText(mLocationModel.getMnc());
+//            textViewLatitude.setText(mLocationModel.getLat());
+//            textViewLongitude.setText(mLocationModel.getLng());
+//            textViewAccuracy.setText(mLocationModel.getAcc());
+//            textViewAddress.setText(mLocationModel.getAddress());
 
-            textViewDateAndTime = viewPagerRootView.findViewById(R.id.text_date_and_time);
-            textViewCellID = viewPagerRootView.findViewById(R.id.text_cell_id);
-            textViewLAC = viewPagerRootView.findViewById(R.id.text_lac);
-            textViewMNC = viewPagerRootView.findViewById(R.id.text_mnc);
-            textViewMCC = viewPagerRootView.findViewById(R.id.text_mcc);
-            textViewLatitude = viewPagerRootView.findViewById(R.id.text_latitude);
-            textViewLongitude = viewPagerRootView.findViewById(R.id.text_longitude);
-            textViewAccuracy = viewPagerRootView.findViewById(R.id.text_accuracy);
-            textViewAddress = viewPagerRootView.findViewById(R.id.text_address);
-
-            textViewDateAndTime.setText(mLocationModel.getDateAndTime());
-            textViewCellID.setText(mLocationModel.getCellId());
-            textViewLAC.setText(mLocationModel.getLac());
-            textViewMCC.setText(mLocationModel.getMcc());
-            textViewMNC.setText(mLocationModel.getMnc());
-            textViewLatitude.setText(mLocationModel.getLat());
-            textViewLongitude.setText(mLocationModel.getLng());
-            textViewAccuracy.setText(mLocationModel.getAcc());
-            textViewAddress.setText(mLocationModel.getAddress());
-        } catch (Exception e) {
-
-        }
     }
 
     public static boolean isLocationPermissionsAllowed(Activity activity) {

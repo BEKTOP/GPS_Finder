@@ -25,6 +25,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
     // User Table Columns names
     private static final String COLUMN_ID = "_id";
     public static final String COLUMN_DAY_AND_TIME = "dayAndTime";
+    public static final String COLUMN_CELL_ID = "cellId";
+    public static final String COLUMN_LAC = "lac";
+    public static final String COLUMN_MCC = "mcc";
+    public static final String COLUMN_MNC = "mnc";
     public static final String COLUMN_JSON_STRING = "jsonString";
     public static final String COLUMN_LAT = "lat";
     public static final String COLUMN_LNG = "lng";
@@ -34,6 +38,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
     private String CREATE_PHONE_STATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             COLUMN_DAY_AND_TIME + " TEXT," +
+            COLUMN_CELL_ID + " TEXT," +
+            COLUMN_LAC + " TEXT," +
+            COLUMN_MCC + " TEXT," +
+            COLUMN_MNC + " TEXT," +
             COLUMN_JSON_STRING + " TEXT," +
             COLUMN_LAT + " TEXT," +
             COLUMN_LNG + " TEXT," +
@@ -65,6 +73,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_DAY_AND_TIME, pLocationModel.getDateAndTime());
+        values.put(COLUMN_CELL_ID, pLocationModel.getCellId());
+        values.put(COLUMN_LAC, pLocationModel.getLac());
+        values.put(COLUMN_MCC, pLocationModel.getMcc());
+        values.put(COLUMN_MNC, pLocationModel.getMnc());
         values.put(COLUMN_JSON_STRING, pLocationModel.getJson_first());
         values.put(COLUMN_LAT, pLocationModel.getLat());
         values.put(COLUMN_LNG, pLocationModel.getLng());
@@ -97,21 +109,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
         return cursor;
     }
 
-    public List<LocationModel> getAllLocationModels() {
-        // array of columns to fetch
+    public LocationModel getAllLocationModels() {
+        LocationModel pLocationModel = new LocationModel();
+
         String[] columns = {
                 COLUMN_ID,
                 COLUMN_DAY_AND_TIME,
+                COLUMN_CELL_ID,
+                COLUMN_LAC,
+                COLUMN_MCC,
+                COLUMN_MNC,
                 COLUMN_LAT,
                 COLUMN_LNG,
                 COLUMN_ACCURACY,
                 COLUMN_ADDRESS
         };
-        // sorting orders
         String sortOrder =
-                COLUMN_DAY_AND_TIME + " ASC";
-        List<LocationModel> pLocationModelList = new ArrayList<>();
-
+                COLUMN_DAY_AND_TIME + " DESC limit 1";
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_NAME, //Table to query
@@ -122,25 +136,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
                 null,       //filter by row groups
                 sortOrder); //The sort order
 
-        // Traversing through all rows and adding to list
-        LocationModel pLocationModel = new LocationModel();
-        if (cursor.moveToFirst()) {
-            do {
+        cursor.moveToLast();
+
                 pLocationModel.set_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
                 pLocationModel.setDateAndTime(cursor.getString(cursor.getColumnIndex(COLUMN_DAY_AND_TIME)));
+                pLocationModel.setCellId(cursor.getString(cursor.getColumnIndex(COLUMN_CELL_ID)));
+                pLocationModel.setLac(cursor.getString(cursor.getColumnIndex(COLUMN_LAC)));
+                pLocationModel.setMcc(cursor.getString(cursor.getColumnIndex(COLUMN_MCC)));
+                pLocationModel.setMnc(cursor.getString(cursor.getColumnIndex(COLUMN_MNC)));
                 pLocationModel.setLat(cursor.getString(cursor.getColumnIndex(COLUMN_LAT)));
                 pLocationModel.setLng(cursor.getString(cursor.getColumnIndex(COLUMN_LNG)));
                 pLocationModel.setAcc(cursor.getString(cursor.getColumnIndex(COLUMN_ACCURACY)));
                 pLocationModel.setAddress(cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS)));
-                // Adding pLocationModel record to list
-                pLocationModelList.add(pLocationModel);
-            } while (cursor.moveToNext());
-        }
+
         cursor.close();
         db.close();
 
         // return pLocationModel list
-        return pLocationModelList;
+        return pLocationModel;
     }
 
     public void updateUser(LocationModel pLocationModel) {

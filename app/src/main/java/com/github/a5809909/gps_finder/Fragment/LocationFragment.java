@@ -10,11 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.a5809909.gps_finder.Loaders.IAsyncTaskListener;
 import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
+import com.github.a5809909.gps_finder.Sql.DatabaseHelper;
 
-public class LocationFragment extends Fragment {
-
+public class LocationFragment extends Fragment implements IAsyncTaskListener {
+Context mContext;
     LocationModel mLocationModel;
     SharedPreferences sPref;
     TextView textViewDateAndTime, textViewCellID, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude, textViewAccuracy,
@@ -38,16 +40,25 @@ public class LocationFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void finishedAsyncTask() {
+        Log.i("444", "finishedAsyncTask: ");
+    }
 
     private void initFragment(View pView) {
         Log.i("222", "initFragment: ");
-        getShared();
+
         initFragmentViews(pView);
-        setFragmentViews();
+        setFragmentViews(mContext);
     }
 
-    public void setFragmentViews() {
+    public void setFragmentViews(Context pContext) {
+        try {
 
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
+        mLocationModel= databaseHelper.getAllLocationModels();
+        databaseHelper.close();
 
         textViewDateAndTime.setText(mLocationModel.getDateAndTime());
         textViewCellID.setText(mLocationModel.getCellId());
@@ -59,6 +70,9 @@ public class LocationFragment extends Fragment {
         textViewAccuracy.setText(mLocationModel.getAcc());
         textViewAddress.setText(mLocationModel.getAddress());
         Log.i("222", "setFragmentViews: "+mLocationModel.getDateAndTime());
+        }catch (Exception pE){
+
+        }
     }
 
     private void initFragmentViews(View pView) {
@@ -75,22 +89,28 @@ public class LocationFragment extends Fragment {
 
     }
 
-    private void getShared() {
-        try {
-            sPref = this.getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+//    private void getShared() {
+//        try {
+//            sPref = this.getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+//
+//            mLocationModel.setDateAndTime(sPref.getString("dayAndTime", ""));
+//            mLocationModel.setCellId(sPref.getString("cellId", ""));
+//            mLocationModel.setLac(sPref.getString("lac", ""));
+//            mLocationModel.setMcc(sPref.getString("mcc", ""));
+//            mLocationModel.setMnc(sPref.getString("mnc", ""));
+//            mLocationModel.setLat(sPref.getString("lat", ""));
+//            mLocationModel.setLng(sPref.getString("lng", ""));
+//            mLocationModel.setAcc(sPref.getString("accuracy", ""));
+//            mLocationModel.setAddress(sPref.getString("address", ""));
+//            Log.i("222", "getShared: "+sPref.getString("dayAndTime", ""));
+//        } catch (Exception e) {
+//
+//        }
+//    }
 
-            mLocationModel.setDateAndTime(sPref.getString("dayAndTime", ""));
-            mLocationModel.setCellId(sPref.getString("cellId", ""));
-            mLocationModel.setLac(sPref.getString("lac", ""));
-            mLocationModel.setMcc(sPref.getString("mcc", ""));
-            mLocationModel.setMnc(sPref.getString("mnc", ""));
-            mLocationModel.setLat(sPref.getString("lat", ""));
-            mLocationModel.setLng(sPref.getString("lng", ""));
-            mLocationModel.setAcc(sPref.getString("accuracy", ""));
-            mLocationModel.setAddress(sPref.getString("address", ""));
-            Log.i("222", "getShared: "+sPref.getString("dayAndTime", ""));
-        } catch (Exception e) {
-
-        }
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i("333", "onResume: ");
     }
 }
