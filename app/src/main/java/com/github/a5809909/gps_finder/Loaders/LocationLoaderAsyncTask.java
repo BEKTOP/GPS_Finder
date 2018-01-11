@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.github.a5809909.gps_finder.Activity.MainActivity;
 import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.Sql.DatabaseHelper;
 
@@ -106,10 +105,10 @@ public class LocationLoaderAsyncTask extends AsyncTask<LocationModel, Void, Loca
             mLocationModel.setAddress(address);
             databaseHelper = new DatabaseHelper(instance);
             databaseHelper.addUser(mLocationModel);
-            databaseHelper.close();
+   //         databaseHelper.close();
         } catch (Exception e) {
             final String err = e.getMessage();
-            Log.i(TAG, "doInBackground: "+err);
+            Log.i(TAG, "doInBackground: " + err);
             mLocationModel.setErrors(err);
         }
         return mLocationModel;

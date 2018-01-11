@@ -81,7 +81,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
     public Cursor getAllItems() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
-        Log.i("cc", "getAllItems: " + cursor.getPosition());
+        Log.i("111", "getAllItems: " + cursor.getPosition());
         return cursor;
     }
 
