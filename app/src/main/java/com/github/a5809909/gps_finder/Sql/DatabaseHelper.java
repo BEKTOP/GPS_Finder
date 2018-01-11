@@ -80,7 +80,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
 
     public Cursor getAllItems() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
+        String sortOrder =
+                COLUMN_DAY_AND_TIME + " DESC";
+        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, sortOrder);
+        Log.i("111", "getAllItems: DESC" + cursor.getPosition());
+        return cursor;
+    }
+
+    public Cursor getLastItem() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sortOrder =
+                COLUMN_DAY_AND_TIME + " DESC limit 1";
+        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, sortOrder);
+        cursor.moveToLast();
         Log.i("111", "getAllItems: " + cursor.getPosition());
         return cursor;
     }
@@ -98,7 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
         // sorting orders
         String sortOrder =
                 COLUMN_DAY_AND_TIME + " ASC";
-        List<LocationModel> pLocationModelList = new ArrayList<LocationModel>();
+        List<LocationModel> pLocationModelList = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
 

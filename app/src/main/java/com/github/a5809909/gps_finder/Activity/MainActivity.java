@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.a5809909.gps_finder.Adapter.ViewPagerAdapter;
+import com.github.a5809909.gps_finder.Fragment.DatabaseFragment2;
 import com.github.a5809909.gps_finder.Loaders.LocationLoaderAsyncTask;
 import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
 import com.github.a5809909.gps_finder.Fragment.LocationFragment;
@@ -364,11 +365,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             super.onBackPressed();
         }
     }
-//    private void saveInSql(PhoneState result) {
-//        databaseHelper = new DatabaseHelper(this);
-//        databaseHelper.addUser(result);
-//
-//    }
 
     @Override
     protected void onStart() {
