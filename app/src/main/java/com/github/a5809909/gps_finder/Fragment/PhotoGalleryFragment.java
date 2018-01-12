@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PhotoGalleryFragment extends Fragment {
-    private static final String TAG = "PhotoGalleryFragment";
+    public static final String TAG = PhotoGalleryFragment.class.getSimpleName();
+
 Context context;
     private RecyclerView mPhotoRecyclerView;
     private List<GalleryItem> mItems = new ArrayList<>();

@@ -10,6 +10,7 @@ import com.github.a5809909.gps_finder.R;
 
 
 public class WeatherFragment extends Fragment{
+    public static final String TAG = WeatherFragment.class.getSimpleName();
 
     public WeatherFragment() {
         // Required empty public constructor

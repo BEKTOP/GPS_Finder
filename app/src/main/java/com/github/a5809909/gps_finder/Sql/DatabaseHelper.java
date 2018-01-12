@@ -9,9 +9,6 @@ import android.util.Log;
 
 import com.github.a5809909.gps_finder.Model.LocationModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
 
     private static final int DATABASE_VERSION = 1;
@@ -34,6 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
     public static final String COLUMN_LNG = "lng";
     public static final String COLUMN_ACCURACY = "accuracy";
     public static final String COLUMN_ADDRESS = "address";
+    private static final String TAG = DatabaseHelper.class.getSimpleName();
 
     private String CREATE_PHONE_STATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -87,7 +85,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
         db.insert(TABLE_NAME, null, values);
         db.close();
 
-        Log.i("111", "addUser: ");
+        Log.i(TAG, "addUser: ");
     }
 
     public Cursor getAllItems() {
@@ -95,7 +93,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
         String sortOrder =
                 COLUMN_DAY_AND_TIME + " DESC";
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, sortOrder);
-        Log.i("111", "getAllItems: DESC" + cursor.getPosition());
+        Log.i(TAG, "getAllItems: DESC" + cursor.getPosition());
+
         return cursor;
     }
 
@@ -105,7 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
                 COLUMN_DAY_AND_TIME + " DESC limit 1";
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, sortOrder);
         cursor.moveToLast();
-        Log.i("111", "getAllItems: " + cursor.getPosition());
+        Log.i(TAG, "getAllItems: " + cursor.getPosition());
         return cursor;
     }
 
@@ -138,16 +137,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
 
         cursor.moveToLast();
 
-                pLocationModel.set_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
-                pLocationModel.setDateAndTime(cursor.getString(cursor.getColumnIndex(COLUMN_DAY_AND_TIME)));
-                pLocationModel.setCellId(cursor.getString(cursor.getColumnIndex(COLUMN_CELL_ID)));
-                pLocationModel.setLac(cursor.getString(cursor.getColumnIndex(COLUMN_LAC)));
-                pLocationModel.setMcc(cursor.getString(cursor.getColumnIndex(COLUMN_MCC)));
-                pLocationModel.setMnc(cursor.getString(cursor.getColumnIndex(COLUMN_MNC)));
-                pLocationModel.setLat(cursor.getString(cursor.getColumnIndex(COLUMN_LAT)));
-                pLocationModel.setLng(cursor.getString(cursor.getColumnIndex(COLUMN_LNG)));
-                pLocationModel.setAcc(cursor.getString(cursor.getColumnIndex(COLUMN_ACCURACY)));
-                pLocationModel.setAddress(cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS)));
+        pLocationModel.set_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
+        pLocationModel.setDateAndTime(cursor.getString(cursor.getColumnIndex(COLUMN_DAY_AND_TIME)));
+        pLocationModel.setCellId(cursor.getString(cursor.getColumnIndex(COLUMN_CELL_ID)));
+        pLocationModel.setLac(cursor.getString(cursor.getColumnIndex(COLUMN_LAC)));
+        pLocationModel.setMcc(cursor.getString(cursor.getColumnIndex(COLUMN_MCC)));
+        pLocationModel.setMnc(cursor.getString(cursor.getColumnIndex(COLUMN_MNC)));
+        pLocationModel.setLat(cursor.getString(cursor.getColumnIndex(COLUMN_LAT)));
+        pLocationModel.setLng(cursor.getString(cursor.getColumnIndex(COLUMN_LNG)));
+        pLocationModel.setAcc(cursor.getString(cursor.getColumnIndex(COLUMN_ACCURACY)));
+        pLocationModel.setAddress(cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS)));
 
         cursor.close();
         db.close();
@@ -171,16 +170,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
         db.close();
     }
 
-    /**
-     * This method is to delete pLocationModel record
-     *
-     * @param pLocationModel
-     */
-    public void deleteLocationModel(LocationModel pLocationModel) {
+
+    public void deleteIditem (String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         // delete pLocationModel record by id
         db.delete(TABLE_NAME, COLUMN_ID + " = ?",
-                new String[]{String.valueOf(pLocationModel.get_id())});
+                new String[]{id});
         db.close();
     }
 

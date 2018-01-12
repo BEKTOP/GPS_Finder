@@ -1,7 +1,6 @@
 package com.github.a5809909.gps_finder.Activity;
 
 import android.app.Activity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,8 +12,6 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -32,16 +29,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.a5809909.gps_finder.Adapter.ViewPagerAdapter;
-import com.github.a5809909.gps_finder.Fragment.DatabaseFragment2;
-import com.github.a5809909.gps_finder.Loaders.LocationLoaderAsyncTask;
 import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
 import com.github.a5809909.gps_finder.Fragment.LocationFragment;
 import com.github.a5809909.gps_finder.Fragment.MapFragment;
 import com.github.a5809909.gps_finder.Fragment.PhotoGalleryFragment;
 import com.github.a5809909.gps_finder.Fragment.WeatherFragment;
 import com.github.a5809909.gps_finder.Loaders.IAsyncTaskListener;
+import com.github.a5809909.gps_finder.Loaders.LocationLoaderAsyncTask;
 import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
+import com.github.a5809909.gps_finder.Sql.DatabaseHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -53,70 +50,48 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     SimpleDateFormat formatter;
     LocationModel mLocationModel;
+    ProgressDialog pd;
+    SharedPreferences sPref;
+    SharedPreferences.Editor sPrefEditor;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private DrawerLayout drawer;
-    ProgressDialog pd;
-
-    SharedPreferences sPref;
-    SharedPreferences.Editor sPrefEditor;
-    //    private DatabaseHelper databaseHelper;
     private MainActivity instance;
-    private static final String TAG = "Main";
+    private static final String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout mDrawerLayout;
-
     private ViewPager viewPager;
     View viewPagerRootView;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
         instance = this;
         mLocationModel = new LocationModel();
-        getShared();
+        getLocationModel();
         initToolbar();
         initNavigationView();
         initTabs();
-        initFab();
 
         viewPager = findViewById(R.id.view_pager);
         viewPagerRootView = viewPager.getRootView();
+        initFabLocationFragment();
     }
 
-    private void getShared() {
+    private void getLocationModel() {
         try {
-            sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
-            mLocationModel.setDateAndTime(sPref.getString("dayAndTime", ""));
-            mLocationModel.setCellId(sPref.getString("cellId", ""));
-            mLocationModel.setLac(sPref.getString("lac", ""));
-            mLocationModel.setMcc(sPref.getString("mcc", ""));
-            mLocationModel.setMnc(sPref.getString("mnc", ""));
-            mLocationModel.setLat(sPref.getString("lat", ""));
-            mLocationModel.setLng(sPref.getString("lng", ""));
-            mLocationModel.setAcc(sPref.getString("accuracy", ""));
-            mLocationModel.setAddress(sPref.getString("address", ""));
+            DatabaseHelper databaseHelper = new DatabaseHelper(instance);
+            mLocationModel = databaseHelper.getAllLocationModels();
+            databaseHelper.close();
 
         } catch (Exception e) {
             //  Toast.makeText(this, "1 time", Toast.LENGTH_LONG).show();
         }
     }
 
-    private void setShared() {
-        sPrefEditor = sPref.edit();
-        sPrefEditor.putString("dayAndTime", mLocationModel.getDateAndTime());
-        sPrefEditor.putString("cellId", mLocationModel.getCellId());
-        sPrefEditor.putString("lac", mLocationModel.getLac());
-        sPrefEditor.putString("mcc", mLocationModel.getMcc());
-        sPrefEditor.putString("mnc", mLocationModel.getMnc());
-        sPrefEditor.putString("lat", mLocationModel.getLat());
-        sPrefEditor.putString("lng", mLocationModel.getLng());
-        sPrefEditor.putString("accuracy", mLocationModel.getAcc());
-        sPrefEditor.putString("address", mLocationModel.getAddress());
-        sPrefEditor.apply();
-    }
-
-    private void initFab() {
+    private void initFabLocationFragment() {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(this);
     }
@@ -140,16 +115,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             getSupportActionBar().setTitle(R.string.app_name);
             toolbar.setSubtitle("");
         } else {
-            String accu = mLocationModel.getAcc();
             getSupportActionBar().setTitle("Lat: " + mLocationModel.getLat().substring(0, 7) + ", Lng: " + mLocationModel.getLng().substring(0, 7));
-            toolbar.setSubtitle("Acc: " + mLocationModel.getAcc().substring(0, mLocationModel.getAcc().lastIndexOf('.')) + ", Date:" + mLocationModel.getDateAndTime());
+            toolbar.setSubtitle(mLocationModel.getDateAndTime());
         }
     }
 
     private void setToolbar() {
         try {
             getSupportActionBar().setTitle("Lat: " + mLocationModel.getLat().substring(0, 7) + ", Lng: " + mLocationModel.getLng().substring(0, 7));
-            toolbar.setSubtitle("Acc: " + mLocationModel.getAcc().substring(0, mLocationModel.getAcc().lastIndexOf('.')) + ", Date:" + mLocationModel.getDateAndTime());
+            toolbar.setSubtitle(mLocationModel.getDateAndTime());
         } catch (Exception e) {
 
         }
@@ -245,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         switch (v.getId()) {
 
             case R.id.fab:
+
                 checkPermission();
                 getLocationClicked();
                 break;
@@ -311,9 +286,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
                     @Override
                     public void finishedAsyncTask() {
-                        setShared();
-                        setTextViewFragment();
                         setToolbar();
+                        setTextViewLocationFragment();
+//                        Fragment fragment1 = ((ViewPagerAdapter) viewPager.getAdapter()).getItem(1);
+//                        fragment1.onResume();
                         if (pd != null) {
                             try {
                                 pd.dismiss();
@@ -340,34 +316,32 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
     }
 
-    private void setTextViewFragment() {
+    private void setTextViewLocationFragment() {
+        try{
+            TextView textViewCellID, textViewDateAndTime, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude,
+                    textViewAccuracy, textViewAddress;
+            textViewDateAndTime = viewPagerRootView.findViewById(R.id.text_date_and_time);
+            textViewCellID = viewPagerRootView.findViewById(R.id.text_cell_id);
+            textViewLAC = viewPagerRootView.findViewById(R.id.text_lac);
+            textViewMNC = viewPagerRootView.findViewById(R.id.text_mnc);
+            textViewMCC = viewPagerRootView.findViewById(R.id.text_mcc);
+            textViewLatitude = viewPagerRootView.findViewById(R.id.text_latitude);
+            textViewLongitude = viewPagerRootView.findViewById(R.id.text_longitude);
+            textViewAccuracy = viewPagerRootView.findViewById(R.id.text_accuracy);
+            textViewAddress = viewPagerRootView.findViewById(R.id.text_address);
 
-        final TextView textViewCellID, textViewDateAndTime, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude,
-                textViewAccuracy, textViewAddress;
+            textViewDateAndTime.setText(mLocationModel.getDateAndTime());
+            textViewCellID.setText(mLocationModel.getCellId());
+            textViewLAC.setText(mLocationModel.getLac());
+            textViewMCC.setText(mLocationModel.getMcc());
+            textViewMNC.setText(mLocationModel.getMnc());
+            textViewLatitude.setText(mLocationModel.getLat());
+            textViewLongitude.setText(mLocationModel.getLng());
+            textViewAccuracy.setText(mLocationModel.getAcc());
+            textViewAddress.setText(mLocationModel.getAddress());
+        }catch (Exception pE){
+        }
 
-       Fragment fragment1 = ((ViewPagerAdapter) viewPager.getAdapter()).getItem(0);
-fragment1.onDestroy();
-
-
-//            textViewDateAndTime = viewPagerRootView.findViewById(R.id.text_date_and_time);
-//            textViewCellID = viewPagerRootView.findViewById(R.id.text_cell_id);
-//            textViewLAC = viewPagerRootView.findViewById(R.id.text_lac);
-//            textViewMNC = viewPagerRootView.findViewById(R.id.text_mnc);
-//            textViewMCC = viewPagerRootView.findViewById(R.id.text_mcc);
-//            textViewLatitude = viewPagerRootView.findViewById(R.id.text_latitude);
-//            textViewLongitude = viewPagerRootView.findViewById(R.id.text_longitude);
-//            textViewAccuracy = viewPagerRootView.findViewById(R.id.text_accuracy);
-//            textViewAddress = viewPagerRootView.findViewById(R.id.text_address);
-//
-//            textViewDateAndTime.setText(mLocationModel.getDateAndTime());
-//            textViewCellID.setText(mLocationModel.getCellId());
-//            textViewLAC.setText(mLocationModel.getLac());
-//            textViewMCC.setText(mLocationModel.getMcc());
-//            textViewMNC.setText(mLocationModel.getMnc());
-//            textViewLatitude.setText(mLocationModel.getLat());
-//            textViewLongitude.setText(mLocationModel.getLng());
-//            textViewAccuracy.setText(mLocationModel.getAcc());
-//            textViewAddress.setText(mLocationModel.getAddress());
 
     }
 
@@ -395,7 +369,7 @@ fragment1.onDestroy();
     @Override
     protected void onStart() {
         super.onStart();
-        getShared();
+        getLocationModel();
     }
 
     @Override

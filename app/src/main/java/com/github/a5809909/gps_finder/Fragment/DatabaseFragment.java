@@ -4,66 +4,122 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
 import com.github.a5809909.gps_finder.Sql.DatabaseHelper;
 
-import java.util.ArrayList;
-import java.util.List;
+public class DatabaseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener, OnItemLongClickListener {
 
-public class DatabaseFragment extends Fragment implements IListener {
+    public static final String TAG = DatabaseFragment.class.getSimpleName();
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    GridView gridView;
+    Cursor mCursor;
+    SimpleCursorAdapter mSimpleCursorAdapter;
+    DatabaseHelper databaseHelper;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_database, container, false);
-        GridView gridView = view.findViewById(R.id.gridView1);
-        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
+        gridView = view.findViewById(R.id.gridView1);
+        registerForContextMenu(gridView);
 
-        List<LocationModel> locationModelList = new ArrayList<>();
-//        locationModelList = databaseHelper.getAllLocationModels();
+        mSwipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        Log.i(TAG, "onCreateView: ");
+        databaseHelper = new DatabaseHelper(getActivity());
+        mCursor = databaseHelper.getAllItems();
         String[] from = new String[]{databaseHelper.COLUMN_DAY_AND_TIME, databaseHelper.COLUMN_LAT, databaseHelper.COLUMN_LNG,
                 databaseHelper.COLUMN_ACCURACY, databaseHelper.COLUMN_ADDRESS};
-        Cursor mCursor = databaseHelper.getAllItems();
         int[] to = new int[]{R.id.tv_date_and_time, R.id.tv_lat, R.id.tv_lng, R.id.tv_acc, R.id.tv_address};
-        Log.i("111", "onCreateView: ");
-        SimpleCursorAdapter cursorAd = new SimpleCursorAdapter(getActivity(), R.layout.item_grid_view, mCursor, from, to, 0);
-
-        gridView.setAdapter(cursorAd);
-
-
+        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.item_grid_view, mCursor, from, to, 0);
+        gridView.setAdapter(mSimpleCursorAdapter);
+        mSwipeRefreshLayout.setRefreshing(false);
         databaseHelper.close();
+
+        gridView.setOnItemLongClickListener(this);
+        gridView.setOnItemSelectedListener(this);
+
         return view;
+    }
+
+//    @Override
+//    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+//        super.onCreateContextMenu(menu, v, menuInfo);
+//
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.context_menu, menu);
+//    }
+//
+//    @Override
+//    public boolean onContextItemSelected(MenuItem item) {
+//        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+//        switch (item.getItemId()) {
+//            case R.id.edit:
+//                editItem(info.position); // метод, выполняющий действие при редактировании пункта меню
+//                return true;
+//            case R.id.delete:
+//                deleteItem(info.position); //метод, выполняющий действие при удалении пункта меню
+//                return true;
+//            default:
+//                return super.onContextItemSelected(item);
+//        }
+//    }
+
+    @Override
+    public void onRefresh() {
+        databaseHelper = new DatabaseHelper(getActivity());
+        mCursor = databaseHelper.getAllItems();
+        String[] from = new String[]{databaseHelper.COLUMN_DAY_AND_TIME, databaseHelper.COLUMN_LAT, databaseHelper.COLUMN_LNG,
+                databaseHelper.COLUMN_ACCURACY, databaseHelper.COLUMN_ADDRESS};
+        int[] to = new int[]{R.id.tv_date_and_time, R.id.tv_lat, R.id.tv_lng, R.id.tv_acc, R.id.tv_address};
+        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.item_grid_view, mCursor, from, to, 0);
+        gridView.setAdapter(mSimpleCursorAdapter);
+        mSwipeRefreshLayout.setRefreshing(false);
+        databaseHelper.close();
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("444", "onResume: ");
+        Log.i(TAG, "onResume: ");
+        //   onRefresh();
     }
 
     @Override
-    public void update() {
-        onResume();
+    public boolean onItemLongClick(AdapterView<?> pAdapterView, View pView, int pI, long pL) {
+        Cursor m = ((Cursor) mSimpleCursorAdapter.getItem(pI));
+        String mmm = m.getString(0);
+        Log.i(TAG, "onItemLongClick: " + mmm + ", PI:" + pI + ", PL:" + pL);
+        databaseHelper = new DatabaseHelper(getActivity());
+        databaseHelper.deleteIditem(mmm);
+        databaseHelper.close();
+        onRefresh();
+        return false;
+
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.i("444", "onDestroyView: ");
+    public void onItemSelected(AdapterView<?> pAdapterView, View pView, int pI, long pL) {
+        //  Log.i(TAG, "onItemSelected: " + ((LocationModel) mSimpleCursorAdapter.getItem(pI)).getDateAndTime());
+
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.i("444", "onDestroy: ");
+    public void onNothingSelected(AdapterView<?> pAdapterView) {
+
     }
 }
+
