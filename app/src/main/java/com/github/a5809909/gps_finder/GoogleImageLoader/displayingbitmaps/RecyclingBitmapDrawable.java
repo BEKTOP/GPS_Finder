@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps.util;
+package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;

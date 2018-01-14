@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps.util;
+package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps;
 
 import android.annotation.TargetApi;
 import android.os.Handler;
@@ -224,8 +224,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * An {@link java.util.concurrent.Executor} that executes tasks one at a time in serial
      * order.  This serialization is global to a particular process.
      */
-    public static final Executor SERIAL_EXECUTOR = Utils.hasHoneycomb() ? new SerialExecutor() :
-            Executors.newSingleThreadExecutor(sThreadFactory);
+    public static final Executor SERIAL_EXECUTOR = Executors.newSingleThreadExecutor(sThreadFactory);
 
     public static final Executor DUAL_THREAD_EXECUTOR =
             Executors.newFixedThreadPool(2, sThreadFactory);

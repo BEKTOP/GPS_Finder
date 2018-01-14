@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps.util;
+package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -126,45 +126,13 @@ public class ImageResizer extends ImageWorker {
         // END_INCLUDE (read_bitmap_dimensions)
 
         // If we're running on Honeycomb or newer, try to use inBitmap
-        if (Utils.hasHoneycomb()) {
-            addInBitmapOptions(options, cache);
-        }
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
-    /**
-     * Decode and sample down a bitmap from a file to the requested width and height.
-     *
-     * @param filename The full path of the file to decode
-     * @param reqWidth The requested width of the resulting bitmap
-     * @param reqHeight The requested height of the resulting bitmap
-     * @param cache The ImageCache used to find candidate bitmaps for use with inBitmap
-     * @return A bitmap sampled down from the original with the same aspect ratio and dimensions
-     *         that are equal to or greater than the requested width and height
-     */
-    public static Bitmap decodeSampledBitmapFromFile(String filename,
-                                                     int reqWidth, int reqHeight, ImageCache cache) {
 
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filename, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // If we're running on Honeycomb or newer, try to use inBitmap
-        if (Utils.hasHoneycomb()) {
-            addInBitmapOptions(options, cache);
-        }
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(filename, options);
-    }
 
     /**
      * Decode and sample down a bitmap from a file input stream to the requested width and height.
@@ -190,10 +158,6 @@ public class ImageResizer extends ImageWorker {
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
 
-        // If we're running on Honeycomb or newer, try to use inBitmap
-        if (Utils.hasHoneycomb()) {
-            addInBitmapOptions(options, cache);
-        }
 
         return BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
     }

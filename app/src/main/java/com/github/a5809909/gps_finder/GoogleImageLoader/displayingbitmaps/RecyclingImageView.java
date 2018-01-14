@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps.ui;
+package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
-
-import com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps.util.RecyclingBitmapDrawable;
 
 /**
  * Sub-class of ImageView which automatically notifies the drawable when it is
@@ -38,16 +36,7 @@ public class RecyclingImageView extends ImageView {
         super(context, attrs);
     }
 
-    /**
-     * @see android.widget.ImageView#onDetachedFromWindow()
-     */
-    @Override
-    protected void onDetachedFromWindow() {
-        // This has been detached from Window, so clear the drawable
-        setImageDrawable(null);
 
-        super.onDetachedFromWindow();
-    }
 
     /**
      * @see android.widget.ImageView#setImageDrawable(android.graphics.drawable.Drawable)

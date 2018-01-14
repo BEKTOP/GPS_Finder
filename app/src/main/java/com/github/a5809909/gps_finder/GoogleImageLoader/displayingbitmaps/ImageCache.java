@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps.util;
+package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -43,8 +43,6 @@ import java.io.OutputStream;
 import java.lang.ref.SoftReference;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -144,10 +142,10 @@ public class ImageCache {
             // require knowledge of the expected size of the bitmaps. From Honeycomb to JellyBean
             // the size would need to be precise, from KitKat onward the size would just need to
             // be the upper bound (due to changes in how inBitmap can re-use bitmaps).
-            if (Utils.hasHoneycomb()) {
-                mReusableBitmaps =
-                        Collections.synchronizedSet(new HashSet<SoftReference<Bitmap>>());
-            }
+//            if (Utils.hasHoneycomb()) {
+//                mReusableBitmaps =
+//                        Collections.synchronizedSet(new HashSet<SoftReference<Bitmap>>());
+//            }
 
             mMemoryCache = new LruCache<String, BitmapDrawable>(mCacheParams.memCacheSize) {
 
@@ -164,11 +162,6 @@ public class ImageCache {
                     } else {
                         // The removed entry is a standard BitmapDrawable
 
-                        if (Utils.hasHoneycomb()) {
-                            // We're running on Honeycomb or later, so add the bitmap
-                            // to a SoftReference set for possible use with inBitmap later
-                            mReusableBitmaps.add(new SoftReference<Bitmap>(oldValue.getBitmap()));
-                        }
                     }
                 }
 
@@ -520,12 +513,12 @@ public class ImageCache {
     private static boolean canUseForInBitmap(
             Bitmap candidate, BitmapFactory.Options targetOptions) {
         //BEGIN_INCLUDE(can_use_for_inbitmap)
-        if (!Utils.hasKitKat()) {
-            // On earlier versions, the dimensions must match exactly and the inSampleSize must be 1
-            return candidate.getWidth() == targetOptions.outWidth
-                    && candidate.getHeight() == targetOptions.outHeight
-                    && targetOptions.inSampleSize == 1;
-        }
+   //     if (!Utils.hasKitKat()) {
+//            // On earlier versions, the dimensions must match exactly and the inSampleSize must be 1
+//            return candidate.getWidth() == targetOptions.outWidth
+//                    && candidate.getHeight() == targetOptions.outHeight
+//                    && targetOptions.inSampleSize == 1;
+  //      }
 
         // From Android 4.4 (KitKat) onward we can re-use if the byte size of the new bitmap
         // is smaller than the reusable bitmap candidate allocation byte count.
@@ -612,17 +605,13 @@ public class ImageCache {
     @TargetApi(VERSION_CODES.KITKAT)
     public static int getBitmapSize(BitmapDrawable value) {
         Bitmap bitmap = value.getBitmap();
-
-        // From KitKat onward use getAllocationByteCount() as allocated bytes can potentially be
-        // larger than bitmap byte count.
-        if (Utils.hasKitKat()) {
-            return bitmap.getAllocationByteCount();
-        }
-
-        if (Utils.hasHoneycombMR1()) {
-            return bitmap.getByteCount();
-        }
-
+//
+//        // From KitKat onward use getAllocationByteCount() as allocated bytes can potentially be
+//        // larger than bitmap byte count.
+//        if (Utils.hasKitKat()) {
+//            return bitmap.getAllocationByteCount();
+//        }
+//
         // Pre HC-MR1
         return bitmap.getRowBytes() * bitmap.getHeight();
     }
@@ -635,9 +624,9 @@ public class ImageCache {
      */
     @TargetApi(VERSION_CODES.GINGERBREAD)
     public static boolean isExternalStorageRemovable() {
-        if (Utils.hasGingerbread()) {
-            return Environment.isExternalStorageRemovable();
-        }
+//        if (Utils.hasGingerbread()) {
+//            return Environment.isExternalStorageRemovable();
+//        }
         return true;
     }
 
@@ -649,9 +638,9 @@ public class ImageCache {
      */
     @TargetApi(VERSION_CODES.FROYO)
     public static File getExternalCacheDir(Context context) {
-        if (Utils.hasFroyo()) {
-            return context.getExternalCacheDir();
-        }
+//        if (Utils.hasFroyo()) {
+//            return context.getExternalCacheDir();
+//        }
 
         // Before Froyo we need to construct the external cache dir ourselves
         final String cacheDir = "/Android/data/" + context.getPackageName() + "/cache/";
@@ -666,9 +655,9 @@ public class ImageCache {
      */
     @TargetApi(VERSION_CODES.GINGERBREAD)
     public static long getUsableSpace(File path) {
-        if (Utils.hasGingerbread()) {
-            return path.getUsableSpace();
-        }
+//        if (Utils.hasGingerbread()) {
+//            return path.getUsableSpace();
+//        }
         final StatFs stats = new StatFs(path.getPath());
         return (long) stats.getBlockSize() * (long) stats.getAvailableBlocks();
     }

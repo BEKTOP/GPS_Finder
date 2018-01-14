@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps.provider;
+package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps;
 
 /**
  * Some simple test data to use for this sample app.
