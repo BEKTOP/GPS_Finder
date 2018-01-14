@@ -25,7 +25,7 @@ public class PhotoGoogleLoader {
 
     private static final String TAG = "PhotoGoogle";
 
-
+    private String[] imageSmallUrls;
     private String lat;
     private String lon;
     private String acc;
@@ -83,7 +83,7 @@ public class PhotoGoogleLoader {
 
                     .appendQueryParameter("place_id", "EYkx6bBZUL_1FVA")
                     .appendQueryParameter("format", "json")
-             //       .appendQueryParameter("text", acc)
+                    //       .appendQueryParameter("text", acc)
                     .appendQueryParameter("nojsoncallback", "1")
                     .appendQueryParameter("extras", "url_s")
                     .build().toString();
@@ -106,7 +106,7 @@ public class PhotoGoogleLoader {
 
         JSONObject photosJsonObject = jsonBody.getJSONObject("photos");
         JSONArray photoJsonArray = photosJsonObject.getJSONArray("photo");
-        String[] imageSmallUrls = new String[photoJsonArray.length()];
+        imageSmallUrls = new String[photoJsonArray.length()];
         for (int i = 0; i < photoJsonArray.length(); i++) {
             JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
 
@@ -124,11 +124,12 @@ public class PhotoGoogleLoader {
             items.add(item);
 
         }
-        for (int j = 0; j <items.size() ; j++) {
-            imageSmallUrls[j]=items.get(j).getUrl();
-            Log.i(TAG, "fetchItems: " +imageSmallUrls[j]);
+        for (int j = 0; j < items.size(); j++) {
+            imageSmallUrls[j] = items.get(j).getUrl();
+            Log.i(TAG, "fetchItems: " + imageSmallUrls[j]);
         }
 
     }
+
 
 }

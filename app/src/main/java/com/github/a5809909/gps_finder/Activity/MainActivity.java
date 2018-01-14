@@ -33,6 +33,7 @@ import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
 import com.github.a5809909.gps_finder.Fragment.LocationFragment;
 import com.github.a5809909.gps_finder.Fragment.MapFragment;
 import com.github.a5809909.gps_finder.Fragment.PhotoPlacesFragment;
+import com.github.a5809909.gps_finder.Fragment.WeatherFragment;
 import com.github.a5809909.gps_finder.ImageLoader.ImageGridFragment;
 import com.github.a5809909.gps_finder.Loaders.IAsyncTaskListener;
 import com.github.a5809909.gps_finder.Loaders.LocationLoaderAsyncTask;
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         adapter.addFrag(new DatabaseFragment(), "DATABASE");
         adapter.addFrag(new MapFragment(), "MAP");
         adapter.addFrag(new ImageGridFragment(), "IMAGES");
-        adapter.addFrag(new PhotoPlacesFragment(), "WEATHER");
+        adapter.addFrag(new WeatherFragment(), "WEATHER");
         viewPager.setAdapter(adapter);
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {

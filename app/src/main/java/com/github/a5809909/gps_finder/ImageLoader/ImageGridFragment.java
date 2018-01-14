@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,9 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
+import com.github.a5809909.gps_finder.Sql.DatabaseHelper;
 
 
 /**
@@ -33,6 +36,8 @@ public class ImageGridFragment extends Fragment {
     private int mImageThumbSpacing;
     private ImageAdapter mAdapter;
     private ImageFetcher mImageFetcher;
+    private String[] photoUrls;
+
 
     /**
      * Empty constructor as per the Fragment documentation
@@ -43,7 +48,7 @@ public class ImageGridFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        getLocationModel();
 
         mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
@@ -113,6 +118,19 @@ public class ImageGridFragment extends Fragment {
         return v;
     }
 
+    private void getLocationModel() {
+        try {
+            DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
+            LocationModel mLocationModel = databaseHelper.getAllLocationModels();
+            databaseHelper.close();
+            String line = mLocationModel.getUrlPhotos();
+            photoUrls = line.split(",");
+            Log.i(TAG, "photoUrls: "+ photoUrls);
+        } catch (Exception e) {
+            //  Toast.makeText(this, "1 time", Toast.LENGTH_LONG).show();
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -145,7 +163,6 @@ public class ImageGridFragment extends Fragment {
         private final Context mContext;
         private int mItemHeight = 0;
         private int mNumColumns = 0;
-        private int mActionBarHeight = 0;
         private GridView.LayoutParams mImageViewLayoutParams;
 
         public ImageAdapter(Context context) {
@@ -163,13 +180,14 @@ public class ImageGridFragment extends Fragment {
             }
 
             // Size + number of columns for top empty row
-            return Images.imageThumbUrls.length + mNumColumns;
+            return photoUrls.length + mNumColumns;
+//            return Images.imageThumbUrls.length + mNumColumns;
         }
 
         @Override
         public Object getItem(int position) {
             return position < mNumColumns ?
-                    null : Images.imageThumbUrls[position - mNumColumns];
+                    null : photoUrls[position - mNumColumns];
         }
 
         @Override
@@ -221,7 +239,7 @@ public class ImageGridFragment extends Fragment {
 
             // Finally load the image asynchronously into the ImageView, this also takes care of
             // setting a placeholder image while the background thread runs
-            mImageFetcher.loadImage(Images.imageThumbUrls[position - mNumColumns], imageView);
+            mImageFetcher.loadImage(photoUrls[position - mNumColumns], imageView);
             return imageView;
             //END_INCLUDE(load_gridview_item)
         }
@@ -251,4 +269,6 @@ public class ImageGridFragment extends Fragment {
             return mNumColumns;
         }
     }
+
+
 }

@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
+import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.FETCHR_API_KEY;
+import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.FETCHR_URI;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOCODING_API_KEY;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOCODING_URI;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOLOCATE_API_KEY;
@@ -80,19 +80,17 @@ public class LocationLoaderAsyncTask extends AsyncTask<LocationModel, Void, Loca
             String response = httpclient.execute(httpost, responseHandler);
             JSONObject jsonResult = new JSONObject(response);
             JSONObject location = jsonResult.getJSONObject("location");
-            mLocationModel.setAcc(jsonResult.getString("accuracy"));
-            mLocationModel.setLat(location.getString("lat"));
-            mLocationModel.setLng(location.getString("lng"));
-            String latlng = mLocationModel.getLat() + "," + mLocationModel.getLng();
+            String acc = jsonResult.getString("accuracy");
+            String lat = location.getString("lat");
+            String lng = location.getString("lng");
 
-            List<String> items = new ArrayList<>();
+            String latlng = lat + "," + lng;
+
             String url = Uri.parse(GOOGLE_GEOCODING_URI)
                     .buildUpon()
                     .appendQueryParameter("key", GOOGLE_GEOCODING_API_KEY)
                     .appendQueryParameter("latlng", latlng)
                     .appendQueryParameter("language", "ru")
-                    //  .appendQueryParameter("result_type", "country|street_address|postal_code")
-
                     .build().toString();
 
             String jsonString = getUrlString(url);
@@ -100,9 +98,63 @@ public class LocationLoaderAsyncTask extends AsyncTask<LocationModel, Void, Loca
             JSONObject jsonBody = new JSONObject(jsonString);
             JSONArray addressJsonArray = jsonBody.getJSONArray("results");
             JSONObject addressObject = addressJsonArray.getJSONObject(0);
-            addressObject.length();
             String address = addressObject.getString("formatted_address");
+
+
+            String urlLocPlaces = Uri.parse(FETCHR_URI)
+                    .buildUpon()
+                    .appendQueryParameter("method", "flickr.places.findByLatLon")
+                    .appendQueryParameter("api_key", FETCHR_API_KEY)
+                    .appendQueryParameter("lat", lat)
+                    .appendQueryParameter("lon", lng)
+                    .appendQueryParameter("language", "ru")
+                    .appendQueryParameter("format", "json")
+                    .appendQueryParameter("nojsoncallback", "1")
+                    .build().toString();
+            String jsonStringPlaces = getUrlString(urlLocPlaces);
+            Log.i(TAG, "Received JSON Photo: " + jsonStringPlaces);
+            JSONObject jsonBodyLocPhoto = new JSONObject(jsonStringPlaces);
+            JSONObject placesJsonObject = jsonBodyLocPhoto.getJSONObject("places");
+            JSONArray placeJsonArray = placesJsonObject.getJSONArray("place");
+            JSONObject placeJsonObject = placeJsonArray.getJSONObject(0);
+            String place_id = placeJsonObject.getString("place_id");
+
+            String urlPhotos = Uri.parse(FETCHR_URI)
+                    .buildUpon()
+                    .appendQueryParameter("method", "flickr.photos.search")
+                    .appendQueryParameter("api_key", FETCHR_API_KEY)
+                    .appendQueryParameter("place_id", place_id)
+                    .appendQueryParameter("format", "json")
+                    .appendQueryParameter("nojsoncallback", "1")
+                    .appendQueryParameter("extras", "url_s")
+                    .build().toString();
+            String jsonStringPhotos = getUrlString(urlPhotos);
+            Log.i(TAG, "Received JSON: " + jsonStringPhotos);
+            JSONObject jsonBodyPhotos = new JSONObject(jsonStringPhotos);
+            JSONObject photosJsonObject = jsonBodyPhotos.getJSONObject("photos");
+            JSONArray photoJsonArray = photosJsonObject.getJSONArray("photo");
+            String[] imageSmallUrls = new String[photoJsonArray.length() - 1];
+            int length = photoJsonArray.length();
+            StringBuilder sb = new StringBuilder();
+            if (length > 10) {
+                length = 10;
+            }
+            for (int i = 0; i < length; i++) {
+                JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
+                if (!photoJsonObject.has("url_s")) {
+                    continue;
+                }
+                sb.append(photoJsonObject.getString("url_s") );
+            }
+
+            mLocationModel.setUrlPhotos(sb.toString());
+            Log.i(TAG, "Json getPhotos " + mLocationModel.getUrlPhotos());
+            mLocationModel.setAcc(acc);
+            mLocationModel.setLat(lat);
+            mLocationModel.setLng(lng);
             mLocationModel.setAddress(address);
+
+
             databaseHelper = new DatabaseHelper(instance);
             databaseHelper.addUser(mLocationModel);
             databaseHelper.close();

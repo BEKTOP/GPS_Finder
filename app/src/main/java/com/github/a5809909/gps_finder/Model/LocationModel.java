@@ -12,7 +12,11 @@ public class LocationModel {
     private String lng;
     private String acc;
     private String address;
+    private String urlPhotos;
+
+
     private String errors;
+
 
     public int get_id() {
         return _id;
@@ -101,6 +105,15 @@ public class LocationModel {
     public void setJson_first(String json_first) {
         this.json_first = json_first;
     }
+
+    public String getUrlPhotos() {
+        return urlPhotos;
+    }
+
+    public void setUrlPhotos(String urlPhotos) {
+        this.urlPhotos = urlPhotos;
+    }
+
 
     public String getErrors() {
         return errors;
