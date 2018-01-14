@@ -33,7 +33,7 @@ import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
 import com.github.a5809909.gps_finder.Fragment.LocationFragment;
 import com.github.a5809909.gps_finder.Fragment.MapFragment;
 import com.github.a5809909.gps_finder.Fragment.PhotoPlacesFragment;
-import com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps.ImageGridFragment;
+import com.github.a5809909.gps_finder.ImageLoader.ImageGridFragment;
 import com.github.a5809909.gps_finder.Loaders.IAsyncTaskListener;
 import com.github.a5809909.gps_finder.Loaders.LocationLoaderAsyncTask;
 import com.github.a5809909.gps_finder.Model.LocationModel;

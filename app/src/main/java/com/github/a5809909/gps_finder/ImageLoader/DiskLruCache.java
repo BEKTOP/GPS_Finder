@@ -1,20 +1,4 @@
-/*
- * Copyright (C) 2011 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps;
+package com.github.a5809909.gps_finder.ImageLoader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
@@ -30,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -454,13 +437,7 @@ public final class DiskLruCache implements Closeable {
     }
 
     private static void deleteIfExists(File file) throws IOException {
-//        try {
-//            Libcore.os.remove(file.getPath());
-//        } catch (ErrnoException errnoException) {
-//            if (errnoException.errno != OsConstants.ENOENT) {
-//                throw errnoException.rethrowAsIOException();
-//            }
-//        }
+
         if (file.exists() && !file.delete()) {
             throw new IOException();
         }
@@ -539,20 +516,6 @@ public final class DiskLruCache implements Closeable {
         return editor;
     }
 
-    /**
-     * Returns the directory where this cache stores its data.
-     */
-    public File getDirectory() {
-        return directory;
-    }
-
-    /**
-     * Returns the maximum number of bytes that this cache should use to store
-     * its data.
-     */
-    public long maxSize() {
-        return maxSize;
-    }
 
     /**
      * Returns the number of bytes currently being used to store the values in
@@ -755,12 +718,6 @@ public final class DiskLruCache implements Closeable {
             return ins[index];
         }
 
-        /**
-         * Returns the string value for {@code index}.
-         */
-        public String getString(int index) throws IOException {
-            return inputStreamToString(getInputStream(index));
-        }
 
         @Override
         public void close() {
@@ -797,14 +754,6 @@ public final class DiskLruCache implements Closeable {
             }
         }
 
-        /**
-         * Returns the last committed value as a string, or null if no value
-         * has been committed.
-         */
-        public String getString(int index) throws IOException {
-            InputStream in = newInputStream(index);
-            return in != null ? inputStreamToString(in) : null;
-        }
 
         /**
          * Returns a new unbuffered output stream to write the value at
@@ -822,18 +771,6 @@ public final class DiskLruCache implements Closeable {
             }
         }
 
-        /**
-         * Sets the value at {@code index} to {@code value}.
-         */
-        public void set(int index, String value) throws IOException {
-            Writer writer = null;
-            try {
-                writer = new OutputStreamWriter(newOutputStream(index), UTF_8);
-                writer.write(value);
-            } finally {
-                closeQuietly(writer);
-            }
-        }
 
         /**
          * Commits this edit so it is visible to readers.  This releases the

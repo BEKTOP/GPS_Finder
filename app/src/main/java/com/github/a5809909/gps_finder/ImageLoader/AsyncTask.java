@@ -1,20 +1,4 @@
-/*
- * Copyright (C) 2008 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps;
+package com.github.a5809909.gps_finder.ImageLoader;
 
 import android.annotation.TargetApi;
 import android.os.Handler;
@@ -289,15 +273,6 @@ public abstract class AsyncTask<Params, Progress, Result> {
         FINISHED,
     }
 
-    /** @hide Used to force static handler to be created. */
-    public static void init() {
-        sHandler.getLooper();
-    }
-
-    /** @hide */
-    public static void setDefaultExecutor(Executor exec) {
-        sDefaultExecutor = exec;
-    }
 
     /**
      * Creates a new asynchronous task. This constructor must be invoked on the UI thread.
@@ -345,16 +320,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
         return result;
     }
 
-    /**
-     * Returns the current status of this task.
-     *
-     * @return The current status.
-     */
-    public final Status getStatus() {
-        return mStatus;
-    }
-
-    /**
+     /**
      * Override this method to perform a computation on a background thread. The
      * specified parameters are the parameters passed to {@link #execute}
      * by the caller of this task.

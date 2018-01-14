@@ -1,20 +1,4 @@
-/*
- * Copyright (C) 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps;
+package com.github.a5809909.gps_finder.ImageLoader;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -26,10 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.widget.ImageView;
-
-import com.github.a5809909.gps_finder.BuildConfig;
 
 import java.lang.ref.WeakReference;
 
@@ -52,7 +33,6 @@ public abstract class ImageWorker {
 
     protected Resources mResources;
 
-    private static final int MESSAGE_CLEAR = 0;
     private static final int MESSAGE_INIT_DISK_CACHE = 1;
     private static final int MESSAGE_FLUSH = 2;
     private static final int MESSAGE_CLOSE = 3;
@@ -201,16 +181,16 @@ public abstract class ImageWorker {
      *
      * @param imageView
      */
-    public static void cancelWork(ImageView imageView) {
-        final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
-        if (bitmapWorkerTask != null) {
-            bitmapWorkerTask.cancel(true);
-            if (BuildConfig.DEBUG) {
-                final Object bitmapData = bitmapWorkerTask.mData;
-                Log.d(TAG, "cancelWork - cancelled work for " + bitmapData);
-            }
-        }
-    }
+//    public static void cancelWork(ImageView imageView) {
+//        final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
+//        if (bitmapWorkerTask != null) {
+//            bitmapWorkerTask.cancel(true);
+//            if (BuildConfig.DEBUG) {
+//                final Object bitmapData = bitmapWorkerTask.mData;
+//                Log.d(TAG, "cancelWork - cancelled work for " + bitmapData);
+//            }
+//        }
+//    }
 
     /**
      * Returns true if the current work has been canceled or if there was no work in
@@ -226,11 +206,6 @@ public abstract class ImageWorker {
             final Object bitmapData = bitmapWorkerTask.mData;
             if (bitmapData == null || !bitmapData.equals(data)) {
                 bitmapWorkerTask.cancel(true);
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "cancelPotentialWork - cancelled work for " + data);
-                }
-            } else {
-                // The same work is already in progress.
                 return false;
             }
         }
@@ -279,10 +254,6 @@ public abstract class ImageWorker {
          */
         @Override
         protected BitmapDrawable doInBackground(Void... params) {
-            //BEGIN_INCLUDE(load_bitmap_in_background)
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, "doInBackground - starting work");
-            }
 
             final String dataString = String.valueOf(mData);
             Bitmap bitmap = null;
@@ -332,10 +303,6 @@ public abstract class ImageWorker {
                 }
             }
 
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, "doInBackground - finished work");
-            }
-
             return drawable;
             //END_INCLUDE(load_bitmap_in_background)
         }
@@ -354,9 +321,7 @@ public abstract class ImageWorker {
 
             final ImageView imageView = getAttachedImageView();
             if (value != null && imageView != null) {
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "onPostExecute - setting bitmap");
-                }
+
                 success = true;
                 setImageDrawable(imageView, value);
             }
@@ -476,9 +441,7 @@ public abstract class ImageWorker {
         @Override
         protected Void doInBackground(Object... params) {
             switch ((Integer) params[0]) {
-                case MESSAGE_CLEAR:
-                    clearCacheInternal();
-                    break;
+
                 case MESSAGE_INIT_DISK_CACHE:
                     initDiskCacheInternal();
                     break;
@@ -499,11 +462,6 @@ public abstract class ImageWorker {
         }
     }
 
-    protected void clearCacheInternal() {
-        if (mImageCache != null) {
-            mImageCache.clearCache();
-        }
-    }
 
     protected void flushCacheInternal() {
         if (mImageCache != null) {
@@ -516,10 +474,6 @@ public abstract class ImageWorker {
             mImageCache.close();
             mImageCache = null;
         }
-    }
-
-    public void clearCache() {
-        new CacheAsyncTask().execute(MESSAGE_CLEAR);
     }
 
     public void flushCache() {

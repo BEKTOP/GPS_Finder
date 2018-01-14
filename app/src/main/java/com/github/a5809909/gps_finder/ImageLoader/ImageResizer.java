@@ -1,30 +1,9 @@
-/*
- * Copyright (C) 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package com.github.a5809909.gps_finder.ImageLoader;
 
-package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps;
-
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
-import android.util.Log;
-
-import com.github.a5809909.gps_finder.BuildConfig;
 
 import java.io.FileDescriptor;
 
@@ -88,18 +67,18 @@ public class ImageResizer extends ImageWorker {
      * @param resId
      * @return
      */
-    private Bitmap processBitmap(int resId) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "processBitmap - " + resId);
-        }
-        return decodeSampledBitmapFromResource(mResources, resId, mImageWidth,
-                mImageHeight, getImageCache());
-    }
+//    private Bitmap processBitmap(int resId) {
+//        if (BuildConfig.DEBUG) {
+//            Log.d(TAG, "processBitmap - " + resId);
+//        }
+//        return decodeSampledBitmapFromResource(mResources, resId, mImageWidth,
+//                mImageHeight, getImageCache());
+//    }
 
-    @Override
-    protected Bitmap processBitmap(Object data) {
-        return processBitmap(Integer.parseInt(String.valueOf(data)));
-    }
+//    @Override
+//    protected Bitmap processBitmap(Object data) {
+//        return processBitmap(Integer.parseInt(String.valueOf(data)));
+//    }
 
     /**
      * Decode and sample down a bitmap from resources to the requested width and height.
@@ -162,24 +141,6 @@ public class ImageResizer extends ImageWorker {
         return BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private static void addInBitmapOptions(BitmapFactory.Options options, ImageCache cache) {
-        //BEGIN_INCLUDE(add_bitmap_options)
-        // inBitmap only works with mutable bitmaps so force the decoder to
-        // return mutable bitmaps.
-        options.inMutable = true;
-
-        if (cache != null) {
-            // Try and find a bitmap to use for inBitmap
-            Bitmap inBitmap = cache.getBitmapFromReusableSet(options);
-
-            if (inBitmap != null) {
-                options.inBitmap = inBitmap;
-            }
-        }
-        //END_INCLUDE(add_bitmap_options)
-    }
-
     /**
      * Calculate an inSampleSize for use in a {@link android.graphics.BitmapFactory.Options} object when decoding
      * bitmaps using the decode* methods from {@link android.graphics.BitmapFactory}. This implementation calculates
@@ -230,5 +191,10 @@ public class ImageResizer extends ImageWorker {
         }
         return inSampleSize;
         // END_INCLUDE (calculate_sample_size)
+    }
+
+    @Override
+    protected Bitmap processBitmap(Object data) {
+        return null;
     }
 }

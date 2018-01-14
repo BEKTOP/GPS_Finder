@@ -71,7 +71,7 @@ public class PhotoGoogleLoader {
 //                    .appendQueryParameter("key", GOOGLE_PLACES_API_KEY)
 //                    .appendQueryParameter("location", acc)
 //                    .appendQueryParameter("radius", "500")
-        acc = "grodno";
+
         List<GalleryItem> items = new ArrayList<>();
 
         try {

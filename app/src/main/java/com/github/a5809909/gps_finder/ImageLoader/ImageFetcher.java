@@ -1,20 +1,5 @@
-/*
- * Copyright (C) 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
-package com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps;
+package com.github.a5809909.gps_finder.ImageLoader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -103,26 +88,6 @@ public class ImageFetcher extends ImageResizer {
             }
             mHttpDiskCacheStarting = false;
             mHttpDiskCacheLock.notifyAll();
-        }
-    }
-
-    @Override
-    protected void clearCacheInternal() {
-        super.clearCacheInternal();
-        synchronized (mHttpDiskCacheLock) {
-            if (mHttpDiskCache != null && !mHttpDiskCache.isClosed()) {
-                try {
-                    mHttpDiskCache.delete();
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "HTTP cache cleared");
-                    }
-                } catch (IOException e) {
-                    Log.e(TAG, "clearCacheInternal - " + e);
-                }
-                mHttpDiskCache = null;
-                mHttpDiskCacheStarting = true;
-                initHttpDiskCache();
-            }
         }
     }
 
