@@ -136,21 +136,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
                 sortOrder); //The sort order
 
         cursor.moveToLast();
+try {
+    pLocationModel.set_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
+    pLocationModel.setDateAndTime(cursor.getString(cursor.getColumnIndex(COLUMN_DAY_AND_TIME)));
+    pLocationModel.setCellId(cursor.getString(cursor.getColumnIndex(COLUMN_CELL_ID)));
+    pLocationModel.setLac(cursor.getString(cursor.getColumnIndex(COLUMN_LAC)));
+    pLocationModel.setMcc(cursor.getString(cursor.getColumnIndex(COLUMN_MCC)));
+    pLocationModel.setMnc(cursor.getString(cursor.getColumnIndex(COLUMN_MNC)));
+    pLocationModel.setLat(cursor.getString(cursor.getColumnIndex(COLUMN_LAT)));
+    pLocationModel.setLng(cursor.getString(cursor.getColumnIndex(COLUMN_LNG)));
+    pLocationModel.setAcc(cursor.getString(cursor.getColumnIndex(COLUMN_ACCURACY)));
+    pLocationModel.setAddress(cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS)));
 
-        pLocationModel.set_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
-        pLocationModel.setDateAndTime(cursor.getString(cursor.getColumnIndex(COLUMN_DAY_AND_TIME)));
-        pLocationModel.setCellId(cursor.getString(cursor.getColumnIndex(COLUMN_CELL_ID)));
-        pLocationModel.setLac(cursor.getString(cursor.getColumnIndex(COLUMN_LAC)));
-        pLocationModel.setMcc(cursor.getString(cursor.getColumnIndex(COLUMN_MCC)));
-        pLocationModel.setMnc(cursor.getString(cursor.getColumnIndex(COLUMN_MNC)));
-        pLocationModel.setLat(cursor.getString(cursor.getColumnIndex(COLUMN_LAT)));
-        pLocationModel.setLng(cursor.getString(cursor.getColumnIndex(COLUMN_LNG)));
-        pLocationModel.setAcc(cursor.getString(cursor.getColumnIndex(COLUMN_ACCURACY)));
-        pLocationModel.setAddress(cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS)));
 
-        cursor.close();
-        db.close();
-
+}catch (Exception e){}
+finally {
+    cursor.close();
+    db.close();
+}
         // return pLocationModel list
         return pLocationModel;
     }

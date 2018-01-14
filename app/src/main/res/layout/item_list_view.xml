@@ -20,28 +20,28 @@
 
             <TextView
                 android:id="@+id/text_view_date_and_time"
-                style="@style/style_grid_label"
+                style="@style/style_list_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Date/Time"/>
 
             <TextView
                 android:id="@+id/lblNetworkLocation"
-                style="@style/style_grid_label"
+                style="@style/style_list_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Latitude:"/>
 
             <TextView
                 android:id="@+id/lblFusedLocation"
-                style="@style/style_grid_label"
+                style="@style/style_list_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Longitude:"/>
 
             <TextView
                 android:id="@+id/lblAPBasedLocation"
-                style="@style/style_grid_label"
+                style="@style/style_list_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Accurancy:"/>
@@ -49,7 +49,7 @@
 
             <TextView
                 android:id="@+id/lblTimestamp"
-                style="@style/style_grid_label"
+                style="@style/style_list_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Address:"/>
@@ -66,7 +66,7 @@
 
             <TextView
                 android:id="@+id/tv_date_and_time"
-                style="@style/style_grid_label_text"
+                style="@style/style_list_label_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/grid_text_loading"/>
@@ -74,7 +74,7 @@
 
             <TextView
                 android:id="@+id/tv_lat"
-                style="@style/style_grid_label_text"
+                style="@style/style_list_label_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/grid_text_loading"/>
@@ -82,7 +82,7 @@
 
             <TextView
                 android:id="@+id/tv_lng"
-                style="@style/style_grid_label_text"
+                style="@style/style_list_label_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/grid_text_loading"/>
@@ -90,7 +90,7 @@
 
             <TextView
                 android:id="@+id/tv_acc"
-                style="@style/style_grid_label_text"
+                style="@style/style_list_label_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/grid_text_loading"/>
@@ -98,7 +98,7 @@
 
             <TextView
                 android:id="@+id/tv_address"
-                style="@style/style_grid_label_text"
+                style="@style/style_list_label_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="2"

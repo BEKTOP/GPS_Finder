@@ -33,10 +33,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLocationModel = new LocationModel();
-        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
-        mLocationModel = databaseHelper.getAllLocationModels();
-        databaseHelper.close();
+
     }
 
     private static View view;
@@ -68,22 +65,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap map) {
-        try {
+        mLocationModel = new LocationModel();
+        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
+        mLocationModel = databaseHelper.getAllLocationModels();
+        databaseHelper.close();
 
-            double lat = Double.parseDouble(mLocationModel.getLat());
-            double lng = Double.parseDouble(mLocationModel.getLng());
-            LatLng latLng = new LatLng(lat, lng);
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(latLng)
-                    .zoom(16)
-                    .build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-            map.animateCamera(cameraUpdate);
-            map.addMarker(new MarkerOptions().position(latLng).title("lat:" + mLocationModel.getLat() + ", lng:" + mLocationModel.getLng()));
-            map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        } catch (Exception pE) {
-
+        double lat;
+        double lng;
+        if (mLocationModel.getLat() == null) {
+            lat = 53.1800000;
+            lng = 23.232323;
+        } else {
+            lat = Double.parseDouble(mLocationModel.getLat());
+            lng = Double.parseDouble(mLocationModel.getLng());
         }
+        LatLng latLng = new LatLng(lat, lng);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng)
+                .zoom(16)
+                .build();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+        map.animateCamera(cameraUpdate);
+        map.addMarker(new MarkerOptions().position(latLng).title("lat:" + mLocationModel.getLat() + ", lng:" + mLocationModel.getLng()));
+        map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+
+
     }
 
 }

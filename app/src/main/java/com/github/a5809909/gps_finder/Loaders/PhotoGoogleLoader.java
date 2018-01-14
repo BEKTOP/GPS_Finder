@@ -21,10 +21,9 @@ import java.util.List;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.FETCHR_API_KEY;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.FETCHR_URI;
 
-public class FlickrFetchr {
+public class PhotoGoogleLoader {
 
-    private static final String TAG = "FlickrFetchr";
-
+    private static final String TAG = "PhotoGoogle";
 
 
     private String lat;
@@ -35,7 +34,7 @@ public class FlickrFetchr {
 
     public byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             InputStream in = connection.getInputStream();
@@ -55,6 +54,7 @@ public class FlickrFetchr {
             connection.disconnect();
         }
     }
+
     public String getUrlString(String urlSpec) throws IOException {
         return new String(getUrlBytes(urlSpec));
     }
@@ -66,26 +66,32 @@ public class FlickrFetchr {
 //        acc = sPref.getString("accuracy", "");
 //        lat = "53.68949";
 //        lon = "23.80334";
-//        acc = "2115.0";
+//            String url = Uri.parse(GOOGLE_PLACES_URI)
+//                    .buildUpon()
+//                    .appendQueryParameter("key", GOOGLE_PLACES_API_KEY)
+//                    .appendQueryParameter("location", acc)
+//                    .appendQueryParameter("radius", "500")
+        acc = "grodno";
         List<GalleryItem> items = new ArrayList<>();
 
         try {
             String url = Uri.parse(FETCHR_URI)
                     .buildUpon()
-//                    .appendQueryParameter("method", "flickr.places.findByLatLon")
-                    .appendQueryParameter("method", "flickr.photos.getRecent")
+                    .appendQueryParameter("method", "flickr.photos.search")
+                    //                   .appendQueryParameter("method", "flickr.photos.getRecent")
                     .appendQueryParameter("api_key", FETCHR_API_KEY)
-//                    .appendQueryParameter("lat", "53.6894")
-//                    .appendQueryParameter("lon", "23.8029")
+
+                    .appendQueryParameter("place_id", "EYkx6bBZUL_1FVA")
                     .appendQueryParameter("format", "json")
+             //       .appendQueryParameter("text", acc)
                     .appendQueryParameter("nojsoncallback", "1")
                     .appendQueryParameter("extras", "url_s")
                     .build().toString();
+            Log.i(TAG, "Send url: " + url.toString());
             String jsonString = getUrlString(url);
             Log.i(TAG, "Received JSON: " + jsonString);
             JSONObject jsonBody = new JSONObject(jsonString);
             parseItems(items, jsonBody);
-
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch items", ioe);
         } catch (JSONException je) {
@@ -100,22 +106,29 @@ public class FlickrFetchr {
 
         JSONObject photosJsonObject = jsonBody.getJSONObject("photos");
         JSONArray photoJsonArray = photosJsonObject.getJSONArray("photo");
-        String[] imageSmallUrls = new String[photoJsonArray.length()-1];
+        String[] imageSmallUrls = new String[photoJsonArray.length()];
         for (int i = 0; i < photoJsonArray.length(); i++) {
             JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
 
             GalleryItem item = new GalleryItem();
             item.setId(photoJsonObject.getString("id"));
             item.setCaption(photoJsonObject.getString("title"));
-            
+
             if (!photoJsonObject.has("url_s")) {
                 continue;
             }
-            imageSmallUrls[i]=photoJsonObject.getString("url_s");
+
             item.setUrl(photoJsonObject.getString("url_s"));
+
+
             items.add(item);
-            Log.i(TAG, "fetchItems: " +imageSmallUrls[1]);
+
         }
+        for (int j = 0; j <items.size() ; j++) {
+            imageSmallUrls[j]=items.get(j).getUrl();
+            Log.i(TAG, "fetchItems: " +imageSmallUrls[j]);
+        }
+
     }
 
 }

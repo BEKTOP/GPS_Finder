@@ -11,11 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
-import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
 import com.github.a5809909.gps_finder.Sql.DatabaseHelper;
 
@@ -23,7 +21,7 @@ public class DatabaseFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public static final String TAG = DatabaseFragment.class.getSimpleName();
     SwipeRefreshLayout mSwipeRefreshLayout;
-    GridView gridView;
+    ListView listView;
     Cursor mCursor;
     SimpleCursorAdapter mSimpleCursorAdapter;
     DatabaseHelper databaseHelper;
@@ -32,8 +30,8 @@ public class DatabaseFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_database, container, false);
-        gridView = view.findViewById(R.id.gridView1);
-        registerForContextMenu(gridView);
+        listView = view.findViewById(R.id.listView1);
+        registerForContextMenu(listView);
 
         mSwipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -43,13 +41,13 @@ public class DatabaseFragment extends Fragment implements SwipeRefreshLayout.OnR
         String[] from = new String[]{databaseHelper.COLUMN_DAY_AND_TIME, databaseHelper.COLUMN_LAT, databaseHelper.COLUMN_LNG,
                 databaseHelper.COLUMN_ACCURACY, databaseHelper.COLUMN_ADDRESS};
         int[] to = new int[]{R.id.tv_date_and_time, R.id.tv_lat, R.id.tv_lng, R.id.tv_acc, R.id.tv_address};
-        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.item_grid_view, mCursor, from, to, 0);
-        gridView.setAdapter(mSimpleCursorAdapter);
+        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.item_list_view, mCursor, from, to, 0);
+        listView.setAdapter(mSimpleCursorAdapter);
         mSwipeRefreshLayout.setRefreshing(false);
         databaseHelper.close();
 
-        gridView.setOnItemLongClickListener(this);
-        gridView.setOnItemSelectedListener(this);
+        listView.setOnItemLongClickListener(this);
+        listView.setOnItemSelectedListener(this);
 
         return view;
     }
@@ -84,8 +82,8 @@ public class DatabaseFragment extends Fragment implements SwipeRefreshLayout.OnR
         String[] from = new String[]{databaseHelper.COLUMN_DAY_AND_TIME, databaseHelper.COLUMN_LAT, databaseHelper.COLUMN_LNG,
                 databaseHelper.COLUMN_ACCURACY, databaseHelper.COLUMN_ADDRESS};
         int[] to = new int[]{R.id.tv_date_and_time, R.id.tv_lat, R.id.tv_lng, R.id.tv_acc, R.id.tv_address};
-        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.item_grid_view, mCursor, from, to, 0);
-        gridView.setAdapter(mSimpleCursorAdapter);
+        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.item_list_view, mCursor, from, to, 0);
+        listView.setAdapter(mSimpleCursorAdapter);
         mSwipeRefreshLayout.setRefreshing(false);
         databaseHelper.close();
 

@@ -32,8 +32,8 @@ import com.github.a5809909.gps_finder.Adapter.ViewPagerAdapter;
 import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
 import com.github.a5809909.gps_finder.Fragment.LocationFragment;
 import com.github.a5809909.gps_finder.Fragment.MapFragment;
-import com.github.a5809909.gps_finder.Fragment.PhotoGalleryFragment;
-import com.github.a5809909.gps_finder.Fragment.WeatherFragment;
+import com.github.a5809909.gps_finder.Fragment.PhotoPlacesFragment;
+import com.github.a5809909.gps_finder.GoogleImageLoader.displayingbitmaps.ui.ImageGridFragment;
 import com.github.a5809909.gps_finder.Loaders.IAsyncTaskListener;
 import com.github.a5809909.gps_finder.Loaders.LocationLoaderAsyncTask;
 import com.github.a5809909.gps_finder.Model.LocationModel;
@@ -149,8 +149,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         adapter.addFrag(new LocationFragment(), "LOCATION");
         adapter.addFrag(new DatabaseFragment(), "DATABASE");
         adapter.addFrag(new MapFragment(), "MAP");
-        adapter.addFrag(new PhotoGalleryFragment(), "IMAGES");
-        adapter.addFrag(new WeatherFragment(), "WEATHER");
+        adapter.addFrag(new ImageGridFragment(), "IMAGES");
+        adapter.addFrag(new PhotoPlacesFragment(), "WEATHER");
         viewPager.setAdapter(adapter);
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
