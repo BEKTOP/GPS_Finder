@@ -19,40 +19,40 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_date_and_time"
+                android:id="@+id/text_view_label_date_and_time"
                 style="@style/style_list_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date/Time"/>
+                android:text="@string/text_label_date_time"/>
 
             <TextView
-                android:id="@+id/lblNetworkLocation"
+                android:id="@+id/text_view_label_latitude"
                 style="@style/style_list_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Latitude:"/>
+                android:text="@string/text_label_latitude"/>
 
             <TextView
-                android:id="@+id/lblFusedLocation"
+                android:id="@+id/text_view_label_longitude"
                 style="@style/style_list_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Longitude:"/>
+                android:text="@string/text_label_longitude"/>
 
             <TextView
-                android:id="@+id/lblAPBasedLocation"
+                android:id="@+id/text_view_label_accurancy"
                 style="@style/style_list_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Accurancy:"/>
+                android:text="@string/text_label_accurancy"/>
 
 
             <TextView
-                android:id="@+id/lblTimestamp"
+                android:id="@+id/text_view_label_address"
                 style="@style/style_list_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Address:"/>
+                android:text="@string/text_label_address"/>
 
 
         </LinearLayout>
@@ -65,44 +65,44 @@
 
 
             <TextView
-                android:id="@+id/tv_date_and_time"
+                android:id="@+id/text_view_date_and_time"
                 style="@style/style_list_label_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/grid_text_loading"/>
+                android:text="@string/list_view_text_loading"/>
 
 
             <TextView
-                android:id="@+id/tv_lat"
+                android:id="@+id/text_view_latitude"
                 style="@style/style_list_label_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/grid_text_loading"/>
+                android:text="@string/list_view_text_loading"/>
 
 
             <TextView
-                android:id="@+id/tv_lng"
+                android:id="@+id/text_view_longitude"
                 style="@style/style_list_label_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/grid_text_loading"/>
+                android:text="@string/list_view_text_loading"/>
 
 
             <TextView
-                android:id="@+id/tv_acc"
+                android:id="@+id/text_view_accurancy"
                 style="@style/style_list_label_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/grid_text_loading"/>
+                android:text="@string/list_view_text_loading"/>
 
 
             <TextView
-                android:id="@+id/tv_address"
+                android:id="@+id/text_view_address"
                 style="@style/style_list_label_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="2"
-                android:text="@string/grid_text_loading"/>
+                android:text="@string/list_view_text_loading"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -117,7 +117,7 @@
             android:layout_height="1dp"
             android:layout_marginTop="4dp"
             android:background="@color/colorPrimaryDark"
-            app:layout_constraintTop_toBottomOf="@+id/lblTimestamp"/>
+            app:layout_constraintTop_toBottomOf="@+id/text_view_label_address"/>
     </LinearLayout>
 
 

@@ -40,7 +40,7 @@ public class DatabaseFragment extends Fragment implements SwipeRefreshLayout.OnR
         mCursor = databaseHelper.getAllItems();
         String[] from = new String[]{databaseHelper.COLUMN_DAY_AND_TIME, databaseHelper.COLUMN_LAT, databaseHelper.COLUMN_LNG,
                 databaseHelper.COLUMN_ACCURACY, databaseHelper.COLUMN_ADDRESS};
-        int[] to = new int[]{R.id.tv_date_and_time, R.id.tv_lat, R.id.tv_lng, R.id.tv_acc, R.id.tv_address};
+        int[] to = new int[]{R.id.text_view_date_and_time, R.id.text_view_latitude, R.id.text_view_longitude, R.id.text_view_accurancy, R.id.text_view_address};
         mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.item_list_view, mCursor, from, to, 0);
         listView.setAdapter(mSimpleCursorAdapter);
         mSwipeRefreshLayout.setRefreshing(false);
@@ -81,7 +81,7 @@ public class DatabaseFragment extends Fragment implements SwipeRefreshLayout.OnR
         mCursor = databaseHelper.getAllItems();
         String[] from = new String[]{databaseHelper.COLUMN_DAY_AND_TIME, databaseHelper.COLUMN_LAT, databaseHelper.COLUMN_LNG,
                 databaseHelper.COLUMN_ACCURACY, databaseHelper.COLUMN_ADDRESS};
-        int[] to = new int[]{R.id.tv_date_and_time, R.id.tv_lat, R.id.tv_lng, R.id.tv_acc, R.id.tv_address};
+        int[] to = new int[]{R.id.text_view_date_and_time, R.id.text_view_latitude, R.id.text_view_longitude, R.id.text_view_accurancy, R.id.text_view_address};
         mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.item_list_view, mCursor, from, to, 0);
         listView.setAdapter(mSimpleCursorAdapter);
         mSwipeRefreshLayout.setRefreshing(false);

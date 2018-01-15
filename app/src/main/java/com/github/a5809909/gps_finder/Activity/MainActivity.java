@@ -154,28 +154,28 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         adapter.addFrag(new WeatherFragment(), "WEATHER");
         viewPager.setAdapter(adapter);
 
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-                                              @Override
-                                              public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                                              }
-
-                                              @Override
-                                              public void onPageScrollStateChanged(int state) {
-
-                                              }
-
-                                              @Override
-                                              public void onPageSelected(int position) {
-                                                  Fragment fragment = adapter.getItem(position);
-                                                  if (fragment instanceof DatabaseFragment) {
-                                                      ((DatabaseFragment) fragment).onResume();
-                                                  }
-
-                                              }
-                                          }
-        );
+//        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//
+//                                              @Override
+//                                              public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//                                              }
+//
+//                                              @Override
+//                                              public void onPageScrollStateChanged(int state) {
+//
+//                                              }
+//
+//                                              @Override
+//                                              public void onPageSelected(int position) {
+//                                                  Fragment fragment = adapter.getItem(position);
+//                                                  if (fragment instanceof DatabaseFragment) {
+//                                                      ((DatabaseFragment) fragment).onResume();
+//                                                  }
+//
+//                                              }
+//                                          }
+//        );
 
     }
 

@@ -14,10 +14,10 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/text_view_date_and_time"
+            android:id="@+id/text_view_label_date_and_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date / Time: "
+            android:text="@string/text_label_date_time"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimary"
             android:textStyle="bold"/>
@@ -26,7 +26,8 @@
             android:id="@+id/text_date_and_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Date / Time"
+            android:layout_marginLeft="8dp"
+            android:text="@string/text_view_date_time"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimaryText"
             android:textStyle="bold"/>
@@ -37,9 +38,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-
         android:background="@color/colorPrimary"/>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,37 +50,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:orientation="vertical"
->
-
+            android:orientation="vertical">
             <TextView
                 android:id="@+id/text_view_cell_id"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cell ID: "/>
+                android:text="@string/text_label_cell_id"/>
             <TextView
                 android:id="@+id/text_view_latitude"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Latitude: "/>
+                android:text="@string/text_label_latitude"/>
 
             <TextView
                 android:id="@+id/text_view_longitude"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Longitude: "/>
+                android:text="@string/text_label_longitude"/>
 
             <TextView
                 android:id="@+id/text_view_accuracy"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Accuracy: "/>
-
-
+                android:text="@string/text_label_accurancy"/>
 
         </LinearLayout>
 
@@ -89,38 +84,35 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:orientation="vertical"
->
-
+            android:layout_marginLeft="4dp"
+            android:orientation="vertical">
             <TextView
                 android:id="@+id/text_cell_id"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cell ID"/>
+                android:text="@string/text_view_cell_id"/>
 
             <TextView
                 android:id="@+id/text_latitude"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Latitude"/>
+                android:text="@string/text_view_latitude"/>
 
             <TextView
                 android:id="@+id/text_longitude"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Longitude"/>
+                android:text="@string/text_view_longitude"/>
 
             <TextView
                 android:id="@+id/text_accuracy"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Accuracy"/>
-
-
+                android:text="@string/text_view_accuracy"/>
 
         </LinearLayout>
 
@@ -128,25 +120,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:orientation="vertical"
->
-
-
-
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/text_view_lac"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LAC: "/>
+                android:text="@string/text_label_lac"/>
 
             <TextView
                 android:id="@+id/text_view_mcc"
                 style="@style/style_text_view_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MCC: "/>
+                android:text="@string/text_label_mcc"/>
 
             <TextView
                 android:id="@+id/text_view_mnc"
@@ -154,7 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:text="MNC: "/>
+                android:text="@string/text_label_mnc"/>
 
         </LinearLayout>
 
@@ -162,6 +150,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginLeft="4dp"
             android:orientation="vertical">
 
             <TextView
@@ -169,21 +158,21 @@
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LAC"/>
+                android:text="@string/text_view_lac"/>
 
             <TextView
                 android:id="@+id/text_mcc"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MCC"/>
+                android:text="@string/text_view_mcc"/>
 
             <TextView
                 android:id="@+id/text_mnc"
                 style="@style/style_text_view_primary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MNC"/>
+                android:text="@string/text_view_mnc"/>
 
         </LinearLayout>
 
@@ -206,7 +195,7 @@
             style="@style/style_text_view_primary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Address: "/>
+            android:text="@string/text_label_address"/>
 
         <TextView
             android:id="@+id/text_address"
@@ -215,7 +204,7 @@
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:maxLines="10"
-            android:text="Address"/>
+            android:text="@string/text_view_address"/>
     </LinearLayout>
 
 
