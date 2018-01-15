@@ -11,15 +11,11 @@ import com.github.a5809909.gps_finder.Model.LocationModel;
 
 public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
 
+    private static final String TAG = DatabaseHelper.class.getSimpleName();
     private static final int DATABASE_VERSION = 1;
-
-    // Database Name
     private static final String DATABASE_NAME = "LocationDataBase.db";
 
-    // User table name
     private static final String TABLE_NAME = "LocationTable";
-
-    // User Table Columns names
     private static final String COLUMN_ID = "_id";
     public static final String COLUMN_DAY_AND_TIME = "dayAndTime";
     public static final String COLUMN_CELL_ID = "cellId";
@@ -32,7 +28,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
     public static final String COLUMN_ACCURACY = "accuracy";
     public static final String COLUMN_ADDRESS = "address";
     public static final String COLUMN_PHOTOS = "urlPhotos";
-    private static final String TAG = DatabaseHelper.class.getSimpleName();
 
     private String CREATE_PHONE_STATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -91,20 +86,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
         Log.i(TAG, "addUser: ");
     }
 
-    public Cursor getAllItems() {
+    public Cursor getLastItem() {
         SQLiteDatabase db = this.getReadableDatabase();
         String sortOrder =
                 COLUMN_DAY_AND_TIME + " DESC";
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, sortOrder);
-        Log.i(TAG, "getAllItems: DESC" + cursor.getPosition());
-
+        Log.i(TAG, "getLastItem: DESC" + cursor.getPosition());
         return cursor;
     }
 
-    public Cursor getLastItem() {
+    public Cursor getAllItems() {
         SQLiteDatabase db = this.getReadableDatabase();
         String sortOrder =
-                COLUMN_DAY_AND_TIME + " DESC limit 1";
+                COLUMN_DAY_AND_TIME + " DESC";
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, sortOrder);
         cursor.moveToLast();
         Log.i(TAG, "getAllItems: " + cursor.getPosition());
@@ -153,7 +147,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
             pLocationModel.setAddress(cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS)));
             pLocationModel.setUrlPhotos(cursor.getString(cursor.getColumnIndex(COLUMN_PHOTOS)));
 
-
         } catch (Exception e) {
         } finally {
             cursor.close();
@@ -178,7 +171,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
         db.close();
     }
 
-
     public void deleteIditem(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         // delete pLocationModel record by id
@@ -186,5 +178,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
                 new String[]{id});
         db.close();
     }
-
 }

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
 import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.Sql.DatabaseHelper;
 
@@ -29,14 +30,14 @@ import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOCODING_URI;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOLOCATE_API_KEY;
 import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.GOOGLE_GEOLOCATE_URI;
+import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID.PHOTO_COUNT;
 
 public class LocationLoaderAsyncTask extends AsyncTask<LocationModel, Void, LocationModel> {
 
-    private String TAG = "AsyncTask";
-    LocationModel mLocationModel;
+    private static final String TAG = LocationLoaderAsyncTask.class.getSimpleName();
+    private LocationModel mLocationModel;
     Context instance;
-    IAsyncTaskListener mIAsyncTaskListener;
-    private DatabaseHelper databaseHelper;
+    private IAsyncTaskListener mIAsyncTaskListener;
 
     public LocationLoaderAsyncTask(Context pContext, IAsyncTaskListener pIAsyncTaskListener) {
         mIAsyncTaskListener = pIAsyncTaskListener;
@@ -46,12 +47,12 @@ public class LocationLoaderAsyncTask extends AsyncTask<LocationModel, Void, Loca
     @Override
     protected LocationModel doInBackground(LocationModel... params) {
         mLocationModel = params[0];
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpost = new HttpPost(GOOGLE_GEOLOCATE_URI + GOOGLE_GEOLOCATE_API_KEY);
-        StringEntity se;
+        final HttpClient httpclient = new DefaultHttpClient();
+        final HttpPost httpost = new HttpPost(GOOGLE_GEOLOCATE_URI + GOOGLE_GEOLOCATE_API_KEY);
+        final StringEntity stringEntity;
 
         try {
-            JSONObject cellTower = new JSONObject();
+            final JSONObject cellTower = new JSONObject();
             cellTower.put("cellId", mLocationModel.getCellId());
             cellTower.put("locationAreaCode", mLocationModel.getLac());
             cellTower.put("mobileCountryCode", mLocationModel.getMcc());
@@ -61,47 +62,47 @@ public class LocationLoaderAsyncTask extends AsyncTask<LocationModel, Void, Loca
                     ", locationAreaCode: " + mLocationModel.getLac() +
                     ", mobileCountryCode: " + mLocationModel.getMcc() +
                     ", mobileNetworkCode: " + mLocationModel.getMnc());
-            JSONArray cellTowers = new JSONArray();
+            final JSONArray cellTowers = new JSONArray();
             cellTowers.put(cellTower);
 
-            JSONObject rootObject = new JSONObject();
+            final JSONObject rootObject = new JSONObject();
             rootObject.put("cellTowers", cellTowers);
 
-            se = new StringEntity(rootObject.toString());
-            se.setContentType("application/json");
+            stringEntity = new StringEntity(rootObject.toString());
+            stringEntity.setContentType("application/json");
 
-            httpost.setEntity(se);
+            httpost.setEntity(stringEntity);
             httpost.setHeader("Accept", "application/json");
             httpost.setHeader("Content-type", "application/json");
             Log.i(TAG, "cellTower: " + cellTower);
             Log.i(TAG, "rootObject.toString(): " + rootObject.toString());
             mLocationModel.setJson_first(rootObject.toString());
-            ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            String response = httpclient.execute(httpost, responseHandler);
-            JSONObject jsonResult = new JSONObject(response);
-            JSONObject location = jsonResult.getJSONObject("location");
-            String acc = jsonResult.getString("accuracy");
-            String lat = location.getString("lat");
-            String lng = location.getString("lng");
+            final ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            final String response = httpclient.execute(httpost, responseHandler);
+            final JSONObject jsonResult = new JSONObject(response);
+            final JSONObject location = jsonResult.getJSONObject("location");
+            final String acc = jsonResult.getString("accuracy");
+            final String lat = location.getString("lat");
+            final String lng = location.getString("lng");
 
-            String latlng = lat + "," + lng;
+            final String latlng = lat + "," + lng;
 
-            String url = Uri.parse(GOOGLE_GEOCODING_URI)
+            final String url = Uri.parse(GOOGLE_GEOCODING_URI)
                     .buildUpon()
                     .appendQueryParameter("key", GOOGLE_GEOCODING_API_KEY)
                     .appendQueryParameter("latlng", latlng)
                     .appendQueryParameter("language", "ru")
                     .build().toString();
 
-            String jsonString = getUrlString(url);
+            final String jsonString = getUrlString(url);
             Log.i(TAG, "Received JSON: " + jsonString);
-            JSONObject jsonBody = new JSONObject(jsonString);
-            JSONArray addressJsonArray = jsonBody.getJSONArray("results");
-            JSONObject addressObject = addressJsonArray.getJSONObject(0);
-            String address = addressObject.getString("formatted_address");
+            final JSONObject jsonBody = new JSONObject(jsonString);
+            final JSONArray addressJsonArray = jsonBody.getJSONArray("results");
+            final JSONObject addressObject = addressJsonArray.getJSONObject(0);
 
+            final String address = addressObject.getString("formatted_address");
 
-            String urlLocPlaces = Uri.parse(FETCHR_URI)
+            final String urlLocPlaces = Uri.parse(FETCHR_URI)
                     .buildUpon()
                     .appendQueryParameter("method", "flickr.places.findByLatLon")
                     .appendQueryParameter("api_key", FETCHR_API_KEY)
@@ -111,15 +112,15 @@ public class LocationLoaderAsyncTask extends AsyncTask<LocationModel, Void, Loca
                     .appendQueryParameter("format", "json")
                     .appendQueryParameter("nojsoncallback", "1")
                     .build().toString();
-            String jsonStringPlaces = getUrlString(urlLocPlaces);
+            final String jsonStringPlaces = getUrlString(urlLocPlaces);
             Log.i(TAG, "Received JSON Photo: " + jsonStringPlaces);
-            JSONObject jsonBodyLocPhoto = new JSONObject(jsonStringPlaces);
-            JSONObject placesJsonObject = jsonBodyLocPhoto.getJSONObject("places");
-            JSONArray placeJsonArray = placesJsonObject.getJSONArray("place");
-            JSONObject placeJsonObject = placeJsonArray.getJSONObject(0);
-            String place_id = placeJsonObject.getString("place_id");
+            final JSONObject jsonBodyLocPhoto = new JSONObject(jsonStringPlaces);
+            final JSONObject placesJsonObject = jsonBodyLocPhoto.getJSONObject("places");
+            final JSONArray placeJsonArray = placesJsonObject.getJSONArray("place");
+            final JSONObject placeJsonObject = placeJsonArray.getJSONObject(0);
+            final String place_id = placeJsonObject.getString("place_id");
 
-            String urlPhotos = Uri.parse(FETCHR_URI)
+            final String urlPhotos = Uri.parse(FETCHR_URI)
                     .buildUpon()
                     .appendQueryParameter("method", "flickr.photos.search")
                     .appendQueryParameter("api_key", FETCHR_API_KEY)
@@ -128,34 +129,37 @@ public class LocationLoaderAsyncTask extends AsyncTask<LocationModel, Void, Loca
                     .appendQueryParameter("nojsoncallback", "1")
                     .appendQueryParameter("extras", "url_s")
                     .build().toString();
-            String jsonStringPhotos = getUrlString(urlPhotos);
+            final String jsonStringPhotos = getUrlString(urlPhotos);
             Log.i(TAG, "Received JSON: " + jsonStringPhotos);
-            JSONObject jsonBodyPhotos = new JSONObject(jsonStringPhotos);
-            JSONObject photosJsonObject = jsonBodyPhotos.getJSONObject("photos");
-            JSONArray photoJsonArray = photosJsonObject.getJSONArray("photo");
-            String[] imageSmallUrls = new String[photoJsonArray.length() - 1];
-            int length = photoJsonArray.length();
-            StringBuilder sb = new StringBuilder();
-            if (length > 50) {
-                length = 50;
-            }
-            for (int i = 0; i < length; i++) {
-                JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
-                if (!photoJsonObject.has("url_s")) {
-                    continue;
-                }
-                sb.append(photoJsonObject.getString("url_s")+"," );
-            }
+            final JSONObject jsonBodyPhotos = new JSONObject(jsonStringPhotos);
+            final JSONObject photosJsonObject = jsonBodyPhotos.getJSONObject("photos");
+            final JSONArray photoJsonArray = photosJsonObject.getJSONArray("photo");
+            int lengthPhotoArray = photoJsonArray.length();
+            final StringBuilder stringBuilder = new StringBuilder();
+            if (lengthPhotoArray == 0) {
+                mLocationModel.setUrlPhotos("http://epam.com");
+            } else {
 
-            mLocationModel.setUrlPhotos(sb.toString());
+                if (lengthPhotoArray > PHOTO_COUNT) {
+                    lengthPhotoArray = PHOTO_COUNT;
+                }
+                for (int i = 0; i < lengthPhotoArray; i++) {
+                    final JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
+                    if (!photoJsonObject.has("url_s")) {
+                        continue;
+                    }
+                    stringBuilder.append(photoJsonObject.getString("url_s") + ",");
+                }
+
+                mLocationModel.setUrlPhotos(stringBuilder.toString());
+            }
             Log.i(TAG, "Json getPhotos " + mLocationModel.getUrlPhotos());
             mLocationModel.setAcc(acc);
             mLocationModel.setLat(lat);
             mLocationModel.setLng(lng);
             mLocationModel.setAddress(address);
 
-
-            databaseHelper = new DatabaseHelper(instance);
+            final DatabaseHelper databaseHelper = new DatabaseHelper(instance);
             databaseHelper.addUser(mLocationModel);
             databaseHelper.close();
         } catch (Exception e) {
@@ -169,7 +173,6 @@ public class LocationLoaderAsyncTask extends AsyncTask<LocationModel, Void, Loca
     @Override
     protected void onPostExecute(LocationModel pLocationModel) {
         super.onPostExecute(pLocationModel);
-
         mIAsyncTaskListener.finishedAsyncTask();
     }
 

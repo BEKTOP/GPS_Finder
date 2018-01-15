@@ -9,7 +9,6 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.github.a5809909.gps_finder.BuildConfig;
 import com.github.a5809909.gps_finder.R;
 
 import java.io.BufferedInputStream;
@@ -22,9 +21,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * A simple subclass of {@link ImageResizer} that fetches and resizes images fetched from a URL.
- */
 public class ImageFetcher extends ImageResizer {
     private static final String TAG = "ImageFetcher";
     private static final int HTTP_CACHE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -37,24 +33,11 @@ public class ImageFetcher extends ImageResizer {
     private final Object mHttpDiskCacheLock = new Object();
     private static final int DISK_CACHE_INDEX = 0;
 
-    /**
-     * Initialize providing a target image width and height for the processing images.
-     *
-     * @param context
-     * @param imageWidth
-     * @param imageHeight
-     */
     public ImageFetcher(Context context, int imageWidth, int imageHeight) {
         super(context, imageWidth, imageHeight);
         init(context);
     }
 
-    /**
-     * Initialize providing a single target image size (used for both width and height);
-     *
-     * @param context
-     * @param imageSize
-     */
     public ImageFetcher(Context context, int imageSize) {
         super(context, imageSize);
         init(context);
@@ -79,9 +62,7 @@ public class ImageFetcher extends ImageResizer {
             if (ImageCache.getUsableSpace(mHttpCacheDir) > HTTP_CACHE_SIZE) {
                 try {
                     mHttpDiskCache = DiskLruCache.open(mHttpCacheDir, 1, 1, HTTP_CACHE_SIZE);
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "HTTP cache initialized");
-                    }
+
                 } catch (IOException e) {
                     mHttpDiskCache = null;
                 }
@@ -98,9 +79,6 @@ public class ImageFetcher extends ImageResizer {
             if (mHttpDiskCache != null) {
                 try {
                     mHttpDiskCache.flush();
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "HTTP cache flushed");
-                    }
                 } catch (IOException e) {
                     Log.e(TAG, "flush - " + e);
                 }
@@ -117,9 +95,6 @@ public class ImageFetcher extends ImageResizer {
                     if (!mHttpDiskCache.isClosed()) {
                         mHttpDiskCache.close();
                         mHttpDiskCache = null;
-                        if (BuildConfig.DEBUG) {
-                            Log.d(TAG, "HTTP cache closed");
-                        }
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "closeCacheInternal - " + e);
@@ -128,11 +103,6 @@ public class ImageFetcher extends ImageResizer {
         }
     }
 
-    /**
-    * Simple network connection check.
-    *
-    * @param context
-    */
     private void checkConnection(Context context) {
         final ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -143,18 +113,7 @@ public class ImageFetcher extends ImageResizer {
         }
     }
 
-    /**
-     * The main process method, which will be called by the ImageWorker in the AsyncTask background
-     * thread.
-     *
-     * @param data The data to load the bitmap, in this case, a regular http URL
-     * @return The downloaded and resized bitmap
-     */
     private Bitmap processBitmap(String data) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "processBitmap - " + data);
-        }
-
         final String key = ImageCache.hashKeyForDisk(data);
         FileDescriptor fileDescriptor = null;
         FileInputStream fileInputStream = null;
@@ -170,15 +129,16 @@ public class ImageFetcher extends ImageResizer {
             if (mHttpDiskCache != null) {
                 try {
                     snapshot = mHttpDiskCache.get(key);
+
                     if (snapshot == null) {
-                        if (BuildConfig.DEBUG) {
-                            Log.d(TAG, "processBitmap, not found in http cache, downloading...");
-                        }
                         DiskLruCache.Editor editor = mHttpDiskCache.edit(key);
+
                         if (editor != null) {
+
                             if (downloadUrlToStream(data,
                                     editor.newOutputStream(DISK_CACHE_INDEX))) {
                                 editor.commit();
+
                             } else {
                                 editor.abort();
                             }
@@ -192,8 +152,10 @@ public class ImageFetcher extends ImageResizer {
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "processBitmap - " + e);
+
                 } catch (IllegalStateException e) {
                     Log.e(TAG, "processBitmap - " + e);
+
                 } finally {
                     if (fileDescriptor == null && fileInputStream != null) {
                         try {
@@ -222,12 +184,6 @@ public class ImageFetcher extends ImageResizer {
         return processBitmap(String.valueOf(data));
     }
 
-    /**
-     * Download a bitmap from a URL and write the content to an output stream.
-     *
-     * @param urlString The URL to fetch
-     * @return true if successful, false otherwise
-     */
     public boolean downloadUrlToStream(String urlString, OutputStream outputStream) {
         disableConnectionReuseIfNecessary();
         HttpURLConnection urlConnection = null;
@@ -263,12 +219,7 @@ public class ImageFetcher extends ImageResizer {
         return false;
     }
 
-    /**
-     * Workaround for bug pre-Froyo, see here for more info:
-     * http://android-developers.blogspot.com/2011/09/androids-http-clients.html
-     */
     public static void disableConnectionReuseIfNecessary() {
-        // HTTP connection reuse which was buggy pre-froyo
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO) {
             System.setProperty("http.keepAlive", "false");
         }

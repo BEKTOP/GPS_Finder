@@ -19,12 +19,15 @@ import com.github.a5809909.gps_finder.Sql.DatabaseHelper;
 
 public class DatabaseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener, OnItemLongClickListener {
 
-    public static final String TAG = DatabaseFragment.class.getSimpleName();
+    private static final String TAG = DatabaseFragment.class.getSimpleName();
     SwipeRefreshLayout mSwipeRefreshLayout;
     ListView listView;
     Cursor mCursor;
     SimpleCursorAdapter mSimpleCursorAdapter;
     DatabaseHelper databaseHelper;
+    String[] from = new String[]{databaseHelper.COLUMN_DAY_AND_TIME, databaseHelper.COLUMN_LAT, databaseHelper.COLUMN_LNG,
+            databaseHelper.COLUMN_ACCURACY, databaseHelper.COLUMN_ADDRESS};
+    int[] to = new int[]{R.id.text_view_date_and_time, R.id.text_view_latitude, R.id.text_view_longitude, R.id.text_view_accurancy, R.id.text_view_address};
 
     @Nullable
     @Override
@@ -36,15 +39,7 @@ public class DatabaseFragment extends Fragment implements SwipeRefreshLayout.OnR
         mSwipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         Log.i(TAG, "onCreateView: ");
-        databaseHelper = new DatabaseHelper(getActivity());
-        mCursor = databaseHelper.getAllItems();
-        String[] from = new String[]{databaseHelper.COLUMN_DAY_AND_TIME, databaseHelper.COLUMN_LAT, databaseHelper.COLUMN_LNG,
-                databaseHelper.COLUMN_ACCURACY, databaseHelper.COLUMN_ADDRESS};
-        int[] to = new int[]{R.id.text_view_date_and_time, R.id.text_view_latitude, R.id.text_view_longitude, R.id.text_view_accurancy, R.id.text_view_address};
-        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.item_list_view, mCursor, from, to, 0);
-        listView.setAdapter(mSimpleCursorAdapter);
-        mSwipeRefreshLayout.setRefreshing(false);
-        databaseHelper.close();
+        onRefresh();
 
         listView.setOnItemLongClickListener(this);
         listView.setOnItemSelectedListener(this);
@@ -78,14 +73,12 @@ public class DatabaseFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onRefresh() {
         databaseHelper = new DatabaseHelper(getActivity());
-        mCursor = databaseHelper.getAllItems();
-        String[] from = new String[]{databaseHelper.COLUMN_DAY_AND_TIME, databaseHelper.COLUMN_LAT, databaseHelper.COLUMN_LNG,
-                databaseHelper.COLUMN_ACCURACY, databaseHelper.COLUMN_ADDRESS};
-        int[] to = new int[]{R.id.text_view_date_and_time, R.id.text_view_latitude, R.id.text_view_longitude, R.id.text_view_accurancy, R.id.text_view_address};
+        mCursor = databaseHelper.getLastItem();
         mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.item_list_view, mCursor, from, to, 0);
         listView.setAdapter(mSimpleCursorAdapter);
         mSwipeRefreshLayout.setRefreshing(false);
         databaseHelper.close();
+        Log.i(TAG, "onRefresh: ");
 
     }
 
@@ -93,7 +86,6 @@ public class DatabaseFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume: ");
-        //   onRefresh();
     }
 
     @Override

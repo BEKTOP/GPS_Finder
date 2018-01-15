@@ -1,4 +1,4 @@
-package com.github.a5809909.gps_finder.ImageLoader;
+package com.github.a5809909.gps_finder.Fragment;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -16,20 +16,16 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.github.a5809909.gps_finder.ImageLoader.ImageCache;
+import com.github.a5809909.gps_finder.ImageLoader.ImageFetcher;
+import com.github.a5809909.gps_finder.ImageLoader.RecyclingImageView;
 import com.github.a5809909.gps_finder.Model.LocationModel;
 import com.github.a5809909.gps_finder.R;
 import com.github.a5809909.gps_finder.Sql.DatabaseHelper;
 
+public class ImageFragment extends Fragment {
 
-/**
- * The main fragment that powers the ImageGridActivity screen. Fairly straight forward GridView
- * implementation with the key addition being the ImageWorker class w/ImageCache to load children
- * asynchronously, keeping the UI nice and smooth and caching thumbnails for quick retrieval. The
- * cache is retained over configuration changes like orientation change so the images are populated
- * quickly if, for example, the user rotates the device.
- */
-public class ImageGridFragment extends Fragment {
-    private static final String TAG = "ImageGridFragment";
+    private static final String TAG = ImageFragment.class.getSimpleName();
     private static final String IMAGE_CACHE_DIR = "thumbs";
 
     private int mImageThumbSize;
@@ -38,29 +34,23 @@ public class ImageGridFragment extends Fragment {
     private ImageFetcher mImageFetcher;
     private String[] photoUrls;
 
-
-    /**
-     * Empty constructor as per the Fragment documentation
-     */
-    public ImageGridFragment() {
+    public ImageFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
-
         mAdapter = new ImageAdapter(getActivity());
 
         ImageCache.ImageCacheParams cacheParams =
                 new ImageCache.ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
 
-        cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
+        cacheParams.setMemCacheSizePercent(0.25f);
         getLocationModel();
-        // The ImageFetcher takes care of loading images into our ImageView children asynchronously
+
         mImageFetcher = new ImageFetcher(getActivity(), mImageThumbSize);
         mImageFetcher.setLoadingImage(R.drawable.nofoto);
         mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
@@ -70,16 +60,15 @@ public class ImageGridFragment extends Fragment {
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        final View v = inflater.inflate(R.layout.image_grid_fragment, container, false);
-        final GridView mGridView = (GridView) v.findViewById(R.id.gridView);
+        final View view = inflater.inflate(R.layout.image_grid_fragment, container, false);
+        final GridView mGridView = view.findViewById(R.id.gridView);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
             @Override
             public void onScrollStateChanged(AbsListView absListView, int scrollState) {
-                // Pause fetcher to ensure smoother scrolling when flinging
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-                    // Before Honeycomb pause image loading on scroll to help with performance
 
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
                     mImageFetcher.setPauseWork(false);
                 }
             }
@@ -90,13 +79,9 @@ public class ImageGridFragment extends Fragment {
             }
         });
 
-        // This listener is used to get the final width of the GridView and then calculate the
-        // number of columns and the width of each column. The width of each column is variable
-        // as the GridView has stretchMode=columnWidth. The column width is used to set the height
-        // of each view so we get nice square thumbnails.
         mGridView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @TargetApi(VERSION_CODES.JELLY_BEAN)
+
                     @Override
                     public void onGlobalLayout() {
                         if (mAdapter.getNumColumns() == 0) {
@@ -115,7 +100,7 @@ public class ImageGridFragment extends Fragment {
                     }
                 });
 
-        return v;
+        return view;
     }
 
     private void getLocationModel() {
@@ -125,10 +110,8 @@ public class ImageGridFragment extends Fragment {
             databaseHelper.close();
             String line = mLocationModel.getUrlPhotos();
             photoUrls = line.split(",");
-            Log.i(TAG, "photoUrls: "+ photoUrls
-                    +"   line: "+line);
         } catch (Exception e) {
-            //  Toast.makeText(this, "1 time", Toast.LENGTH_LONG).show();
+            photoUrls[0] = "http://epam.com";
         }
     }
 
@@ -153,12 +136,6 @@ public class ImageGridFragment extends Fragment {
         mImageFetcher.closeCache();
     }
 
-
-    /**
-     * The main adapter that backs the GridView. This is fairly standard except the number of
-     * columns in the GridView is used to create a fake top row of empty views as we use a
-     * transparent ActionBar and don't want the real top row of images to start off covered by it.
-     */
     private class ImageAdapter extends BaseAdapter {
 
         private final Context mContext;
@@ -175,36 +152,20 @@ public class ImageGridFragment extends Fragment {
 
         @Override
         public int getCount() {
-            // If columns have yet to be determined, return no items
             if (getNumColumns() == 0) {
                 return 0;
             }
-
-            // Size + number of columns for top empty row
-            return photoUrls.length + mNumColumns;
-//            return Images.imageThumbUrls.length + mNumColumns;
+            return photoUrls.length;
         }
 
         @Override
-        public Object getItem(int position) {
-            return position < mNumColumns ?
-                    null : photoUrls[position - mNumColumns];
+        public Object getItem(int pI) {
+            return null;
         }
 
         @Override
-        public long getItemId(int position) {
-            return position < mNumColumns ? 0 : position - mNumColumns;
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            // Two types of views, the normal ImageView and the top row of empty views
-            return 2;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return (position < mNumColumns) ? 1 : 0;
+        public long getItemId(int pI) {
+            return 0;
         }
 
         @Override
@@ -214,43 +175,24 @@ public class ImageGridFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup container) {
-            //BEGIN_INCLUDE(load_gridview_item)
-            // First check if this is the top row
-            if (position < mNumColumns) {
-                if (convertView == null) {
-                    convertView = new View(mContext);
-                }
-                return convertView;
-            }
 
-            // Now handle the main ImageView thumbnails
             ImageView imageView;
-            if (convertView == null) { // if it's not recycled, instantiate and initialize
+            if (convertView == null) {
                 imageView = new RecyclingImageView(mContext);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setLayoutParams(mImageViewLayoutParams);
-            } else { // Otherwise re-use the converted view
+            } else {
                 imageView = (ImageView) convertView;
             }
 
-            // Check the height matches our calculated column width
             if (imageView.getLayoutParams().height != mItemHeight) {
                 imageView.setLayoutParams(mImageViewLayoutParams);
             }
 
-            // Finally load the image asynchronously into the ImageView, this also takes care of
-            // setting a placeholder image while the background thread runs
-            mImageFetcher.loadImage(photoUrls[position - mNumColumns], imageView);
+            mImageFetcher.loadImage(photoUrls[position], imageView);
             return imageView;
-            //END_INCLUDE(load_gridview_item)
         }
 
-        /**
-         * Sets the item height. Useful for when we know the column width so the height can be set
-         * to match.
-         *
-         * @param height
-         */
         public void setItemHeight(int height) {
             if (height == mItemHeight) {
                 return;
@@ -270,6 +212,5 @@ public class ImageGridFragment extends Fragment {
             return mNumColumns;
         }
     }
-
 
 }

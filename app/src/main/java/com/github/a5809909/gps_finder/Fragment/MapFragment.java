@@ -24,10 +24,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     LocationModel mLocationModel;
     private MapView mapView;
-    public static final String TAG = MapFragment.class.getSimpleName();
+    private static final String TAG = MapFragment.class.getSimpleName();
 
     public MapFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -50,7 +49,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             view = inflater.inflate(R.layout.fragment_map, container, false);
         } catch (InflateException e) {
         }
-
         return view;
     }
 

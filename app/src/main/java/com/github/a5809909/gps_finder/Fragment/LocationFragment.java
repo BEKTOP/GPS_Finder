@@ -16,7 +16,7 @@ import com.github.a5809909.gps_finder.Sql.DatabaseHelper;
 
 public class LocationFragment extends Fragment implements IAsyncTaskListener {
 
-    public static final String TAG = LocationFragment.class.getSimpleName();
+    private static final String TAG = LocationFragment.class.getSimpleName();
     Context mContext;
     LocationModel mLocationModel;
     TextView textViewDateAndTime, textViewCellID, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude, textViewAccuracy,

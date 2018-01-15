@@ -3,7 +3,6 @@ package com.github.a5809909.gps_finder.Activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -30,11 +28,10 @@ import android.widget.Toast;
 
 import com.github.a5809909.gps_finder.Adapter.ViewPagerAdapter;
 import com.github.a5809909.gps_finder.Fragment.DatabaseFragment;
+import com.github.a5809909.gps_finder.Fragment.ImageFragment;
 import com.github.a5809909.gps_finder.Fragment.LocationFragment;
 import com.github.a5809909.gps_finder.Fragment.MapFragment;
-import com.github.a5809909.gps_finder.Fragment.PhotoPlacesFragment;
 import com.github.a5809909.gps_finder.Fragment.WeatherFragment;
-import com.github.a5809909.gps_finder.ImageLoader.ImageGridFragment;
 import com.github.a5809909.gps_finder.Loaders.IAsyncTaskListener;
 import com.github.a5809909.gps_finder.Loaders.LocationLoaderAsyncTask;
 import com.github.a5809909.gps_finder.Model.LocationModel;
@@ -49,26 +46,21 @@ import static com.github.a5809909.gps_finder.Utilities.Constants.NOTIFICATION_ID
 
 public class MainActivity extends AppCompatActivity implements OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     SimpleDateFormat formatter;
     LocationModel mLocationModel;
     ProgressDialog pd;
-    SharedPreferences sPref;
-    SharedPreferences.Editor sPrefEditor;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private DrawerLayout drawer;
     private MainActivity instance;
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private DrawerLayout mDrawerLayout;
     private ViewPager viewPager;
     View viewPagerRootView;
 
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
         instance = this;
         mLocationModel = new LocationModel();
         getLocationModel();
@@ -83,12 +75,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     private void getLocationModel() {
         try {
-            DatabaseHelper databaseHelper = new DatabaseHelper(instance);
+            final DatabaseHelper databaseHelper = new DatabaseHelper(instance);
             mLocationModel = databaseHelper.getAllLocationModels();
             databaseHelper.close();
 
         } catch (Exception e) {
-            //  Toast.makeText(this, "1 time", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -126,9 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             getSupportActionBar().setTitle("Lat: " + mLocationModel.getLat().substring(0, 7) + ", Lng: " + mLocationModel.getLng().substring(0, 7));
             toolbar.setSubtitle(mLocationModel.getDateAndTime());
         } catch (Exception e) {
-
         }
-
     }
 
     private void setupTabIcons() {
@@ -150,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         adapter.addFrag(new LocationFragment(), "LOCATION");
         adapter.addFrag(new DatabaseFragment(), "DATABASE");
         adapter.addFrag(new MapFragment(), "MAP");
-        adapter.addFrag(new ImageGridFragment(), "IMAGES");
+        adapter.addFrag(new ImageFragment(), "IMAGES");
         adapter.addFrag(new WeatherFragment(), "WEATHER");
         viewPager.setAdapter(adapter);
 
@@ -252,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     public static void requestStoragePermissions(Activity activity, int PERMISSION_REQUEST_CODE) {
         try {
-            java.lang.String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.READ_PHONE_STATE","android.permission.WRITE_EXTERNAL_STORAGE"};
+            java.lang.String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.READ_PHONE_STATE", "android.permission.WRITE_EXTERNAL_STORAGE"};
             ActivityCompat.requestPermissions(activity, perms, PERMISSION_REQUEST_CODE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -318,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     private void setTextViewLocationFragment() {
-        try{
+        try {
             TextView textViewCellID, textViewDateAndTime, textViewLAC, textViewMNC, textViewMCC, textViewLatitude, textViewLongitude,
                     textViewAccuracy, textViewAddress;
             textViewDateAndTime = viewPagerRootView.findViewById(R.id.text_date_and_time);
@@ -340,9 +329,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             textViewLongitude.setText(mLocationModel.getLng());
             textViewAccuracy.setText(mLocationModel.getAcc());
             textViewAddress.setText(mLocationModel.getAddress());
-        }catch (Exception pE){
+        } catch (Exception pE) {
         }
-
 
     }
 

@@ -1,13 +1,16 @@
 package com.github.a5809909.gps_finder.Utilities;
 
 public class Constants {
+
     public interface ACTION {
-    public static String MAIN_ACTION = "com.github.a5809909.gps_finder.action.main";
-    public static String STARTFOREGROUND_ACTION = "com.github.a5809909.gps_finder.action.startforeground";
-    public static String STOPFOREGROUND_ACTION = "com.github.a5809909.gps_finder.action.stopforeground";
-}
+
+        public static String MAIN_ACTION = "com.github.a5809909.gps_finder.action.main";
+        public static String STARTFOREGROUND_ACTION = "com.github.a5809909.gps_finder.action.startforeground";
+        public static String STOPFOREGROUND_ACTION = "com.github.a5809909.gps_finder.action.stopforeground";
+    }
 
     public interface NOTIFICATION_ID {
+
         public static int FOREGROUND_SERVICE = 101;
         public static int LOCATION_PERMISSION_CODE = 855;
         public static final String GOOGLE_GEOLOCATE_URI = "https://www.googleapis.com/geolocation/v1/geolocate?key=";
@@ -18,6 +21,7 @@ public class Constants {
         public static final String FETCHR_URI = "https://api.flickr.com/services/rest/";
         public static final String GOOGLE_PLACES_API_KEY = "AIzaSyCtr8GiqK1JUNfJ7Pgp7U-p6Nl__i3GuNo";
         public static final String GOOGLE_PLACES_URI = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
+        public static final int PHOTO_COUNT = 50;
 
     }
 }

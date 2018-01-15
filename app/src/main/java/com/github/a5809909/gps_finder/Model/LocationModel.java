@@ -1,6 +1,7 @@
 package com.github.a5809909.gps_finder.Model;
 
 public class LocationModel {
+
     private int _id;
     private String dateAndTime;
     private String cellId;
@@ -14,9 +15,7 @@ public class LocationModel {
     private String address;
     private String urlPhotos;
 
-
     private String errors;
-
 
     public int get_id() {
         return _id;
@@ -113,7 +112,6 @@ public class LocationModel {
     public void setUrlPhotos(String urlPhotos) {
         this.urlPhotos = urlPhotos;
     }
-
 
     public String getErrors() {
         return errors;
