@@ -136,15 +136,15 @@ public class LocationLoaderAsyncTask extends AsyncTask<LocationModel, Void, Loca
             String[] imageSmallUrls = new String[photoJsonArray.length() - 1];
             int length = photoJsonArray.length();
             StringBuilder sb = new StringBuilder();
-            if (length > 10) {
-                length = 10;
+            if (length > 50) {
+                length = 50;
             }
             for (int i = 0; i < length; i++) {
                 JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
                 if (!photoJsonObject.has("url_s")) {
                     continue;
                 }
-                sb.append(photoJsonObject.getString("url_s") );
+                sb.append(photoJsonObject.getString("url_s")+"," );
             }
 
             mLocationModel.setUrlPhotos(sb.toString());

@@ -48,7 +48,7 @@ public class ImageGridFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLocationModel();
+
 
         mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
@@ -59,7 +59,7 @@ public class ImageGridFragment extends Fragment {
                 new ImageCache.ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
 
         cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
-
+        getLocationModel();
         // The ImageFetcher takes care of loading images into our ImageView children asynchronously
         mImageFetcher = new ImageFetcher(getActivity(), mImageThumbSize);
         mImageFetcher.setLoadingImage(R.drawable.nofoto);
@@ -125,7 +125,8 @@ public class ImageGridFragment extends Fragment {
             databaseHelper.close();
             String line = mLocationModel.getUrlPhotos();
             photoUrls = line.split(",");
-            Log.i(TAG, "photoUrls: "+ photoUrls);
+            Log.i(TAG, "photoUrls: "+ photoUrls
+                    +"   line: "+line);
         } catch (Exception e) {
             //  Toast.makeText(this, "1 time", Toast.LENGTH_LONG).show();
         }

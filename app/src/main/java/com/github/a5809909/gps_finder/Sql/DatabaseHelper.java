@@ -151,6 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {   // Database Version
             pLocationModel.setLng(cursor.getString(cursor.getColumnIndex(COLUMN_LNG)));
             pLocationModel.setAcc(cursor.getString(cursor.getColumnIndex(COLUMN_ACCURACY)));
             pLocationModel.setAddress(cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS)));
+            pLocationModel.setUrlPhotos(cursor.getString(cursor.getColumnIndex(COLUMN_PHOTOS)));
 
 
         } catch (Exception e) {

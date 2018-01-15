@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     public static void requestStoragePermissions(Activity activity, int PERMISSION_REQUEST_CODE) {
         try {
-            java.lang.String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.READ_PHONE_STATE"};
+            java.lang.String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.READ_PHONE_STATE","android.permission.WRITE_EXTERNAL_STORAGE"};
             ActivityCompat.requestPermissions(activity, perms, PERMISSION_REQUEST_CODE);
         } catch (Exception e) {
             e.printStackTrace();
